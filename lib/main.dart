@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:t2_mobile_application/core/config/router.dart';
 import 'package:t2_mobile_application/core/di/di.dart';
+import 'package:t2_mobile_application/core/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +24,8 @@ final class MyApp extends StatelessWidget {
         routerConfig: router,
         title: 'T2 Mobile',
         supportedLocales: const [Locale('ru')],
-        themeMode: ThemeMode.light,
+        themeMode: ThemeMode.dark,
+        darkTheme: T2Theme.darkTheme,
       ),
     );
   }
