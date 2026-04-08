@@ -28,7 +28,7 @@ android {
     }
 
     androidResources {
-        localeFilters += setOf("ru", "en")
+        localeFilters += setOf("ru")
     }
 
     kotlin {
