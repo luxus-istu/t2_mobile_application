@@ -7,6 +7,9 @@ import 'package:t2_mobile_application/core/di/di.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state.dart';
+import 'package:t2_mobile_application/features/games/domain/entities/game_stats.dart';
+import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
+import 'package:t2_mobile_application/features/games/presentation/bloc/games_state.dart';
 import 'package:t2_mobile_application/features/tracking/presentation/bloc/tracking_cubit.dart';
 
 final class ProfilePage extends StatelessWidget {
@@ -14,6 +17,9 @@ final class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext ctx) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      sl<GamesCubit>().loadStats();
+    });
     // Obtain reference to the singleton global tracker
     final trackingCubit = ctx.read<TrackingCubit>();
     final visitedPois = trackingCubit.visitedPois;
@@ -148,6 +154,7 @@ final class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 16.h),
+                // Location stats
                 Container(
                   padding: EdgeInsets.all(16.w),
                   decoration: BoxDecoration(
@@ -204,7 +211,113 @@ final class ProfilePage extends StatelessWidget {
                     ],
                   ),
                 ),
-                SizedBox(height: 32.h),
+                SizedBox(height: 24.h),
+                // Games stats section
+                BlocProvider.value(
+                  value: sl<GamesCubit>(),
+                  child: BlocBuilder<GamesCubit, GamesState>(
+                    builder: (_, state) {
+                      GameStats stats = const GameStats();
+                      if (state is GamesInitial) stats = state.stats;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Игровой прогресс',
+                            style: TextStyle(
+                              color: Theme.of(ctx).colorScheme.onSurface,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Container(
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              color: Theme.of(ctx).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: const Color(0xFF8800CC).withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text('Всего ответов',
+                                            style: TextStyle(
+                                                color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
+                                                fontSize: 13.sp)),
+                                        Text('${stats.totalAnswered}',
+                                            style: TextStyle(
+                                                color: const Color(0xFF8800CC),
+                                                fontSize: 32.sp,
+                                                fontWeight: FontWeight.w900)),
+                                      ],
+                                    ),
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text('Точность',
+                                            style: TextStyle(
+                                                color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
+                                                fontSize: 13.sp)),
+                                        Text('${(stats.accuracy * 100).toInt()}%',
+                                            style: TextStyle(
+                                                color: Theme.of(ctx).colorScheme.onSurface,
+                                                fontSize: 24.sp,
+                                                fontWeight: FontWeight.w700)),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 12.h),
+                                LinearProgressIndicator(
+                                  value: stats.accuracy,
+                                  backgroundColor: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.1),
+                                  color: const Color(0xFF8800CC),
+                                  minHeight: 8.h,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                                if (stats.totalPerGame.isNotEmpty) ...[SizedBox(height: 16.h),
+                                  ...stats.totalPerGame.entries.map((e) {
+                                    final label = switch (e.key) {
+                                      'translate' => '🔤 Выбери перевод',
+                                      'compile' => '🔀 Составь слово',
+                                      'truefalse' => '✅ Верно/Неверно',
+                                      _ => e.key,
+                                    };
+                                    final correct = stats.correctPerGame[e.key] ?? 0;
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: 8.h),
+                                      child: Row(
+                                        children: [
+                                          Expanded(child: Text(label,
+                                              style: TextStyle(fontSize: 14.sp))),
+                                          Text('$correct/${e.value}',
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: const Color(0xFF8800CC),
+                                                  fontSize: 14.sp)),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                SizedBox(height: 24.h),
                 Text(
                   'История посещений',
                   style: TextStyle(
