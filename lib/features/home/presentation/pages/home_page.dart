@@ -37,7 +37,7 @@ final class HomePage extends StatelessWidget {
           SquaredButtons(
             icon: Icons.school_outlined,
             title: 'Обучение',
-            path: '',
+            path: '/lessons',
           ),
           SquaredButtons(
             icon: Icons.sports_esports_outlined,

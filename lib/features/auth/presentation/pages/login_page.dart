@@ -7,6 +7,8 @@ import 'package:t2_mobile_application/core/theme/theme.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state.dart';
 import 'package:t2_mobile_application/features/auth/presentation/widgets/t2_text_field.dart';
+import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -59,6 +61,9 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: Colors.green,
                 ),
               );
+              // Reload per-user data for the newly authenticated user
+              sl<GamesCubit>().loadStats();
+              sl<LessonsCubit>().loadData();
               ctx.go('/home');
             }
           },

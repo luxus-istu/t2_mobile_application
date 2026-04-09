@@ -9,6 +9,8 @@ import 'package:t2_mobile_application/features/games/presentation/pages/game_res
 import 'package:t2_mobile_application/features/games/presentation/pages/games_hub_page.dart';
 import 'package:t2_mobile_application/features/games/presentation/pages/true_false_page.dart';
 import 'package:t2_mobile_application/features/home/presentation/pages/home_page.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/pages/lesson_cards_page.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/pages/lessons_topics_page.dart';
 import 'package:t2_mobile_application/features/profile/presentation/pages/profile_page.dart';
 import 'package:t2_mobile_application/features/settings/presentation/pages/settings_page.dart';
 
@@ -31,6 +33,11 @@ final router = GoRouter(
     GoRoute(
       path: '/games/result',
       builder: (context, state) => GameResultPage(result: state.extra as QuizComplete),
+    ),
+    GoRoute(path: '/lessons', builder: (context, state) => const LessonsTopicsPage()),
+    GoRoute(
+      path: '/lessons/cards',
+      builder: (context, state) => LessonsCardsPage(topic: state.extra as String),
     ),
   ],
 );
