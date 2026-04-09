@@ -1,0 +1,31 @@
+import 'package:equatable/equatable.dart';
+import 'package:t2_mobile_application/features/settings/domain/entities/settings_entity.dart';
+
+sealed class SettingsState extends Equatable {
+  const SettingsState();
+
+  @override
+  List<Object> get props => [];
+}
+
+final class SettingsLoading extends SettingsState {
+  const SettingsLoading();
+}
+
+final class SettingsLoaded extends SettingsState {
+  final SettingsEntity settings;
+
+  const SettingsLoaded(this.settings);
+
+  @override
+  List<Object> get props => [settings];
+}
+
+final class SettingsError extends SettingsState {
+  final String message;
+
+  const SettingsError(this.message);
+
+  @override
+  List<Object> get props => [message];
+}
