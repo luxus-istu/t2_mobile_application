@@ -7,6 +7,7 @@ import 'package:t2_mobile_application/core/theme/theme.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_state.dart';
 import 'package:t2_mobile_application/features/games/presentation/widgets/quiz_scaffold.dart';
+import 'package:t2_mobile_application/core/utils/sound_helper.dart';
 
 class TrueFalsePage extends StatefulWidget {
   const TrueFalsePage({super.key});
@@ -28,6 +29,9 @@ class _TrueFalsePageState extends State<TrueFalsePage> {
       value: sl<GamesCubit>(),
       child: BlocConsumer<GamesCubit, GamesState>(
         listener: (ctx, state) {
+          if (state is QuizAnswered) {
+             SoundHelper.playSound(state.isCorrect ? 'right.mp3' : 'error.mp3');
+          }
           if (state is QuizComplete) {
             ctx.pushReplacement('/games/result', extra: state);
           }

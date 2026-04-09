@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:t2_mobile_application/core/di/di.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
@@ -67,7 +68,7 @@ class _GamesHubPageState extends State<GamesHubPage> {
                 ),
                 SizedBox(height: 16.h),
                 _GameCard(
-                  emoji: '🔤',
+                  svgAsset: 'assets/svgs/translate.svg',
                   title: 'Выбери перевод',
                   subtitle:
                       'Удмуртское слово — выбери правильный перевод из 4 вариантов.',
@@ -78,7 +79,7 @@ class _GamesHubPageState extends State<GamesHubPage> {
                 ),
                 SizedBox(height: 12.h),
                 _GameCard(
-                  emoji: '🔀',
+                  svgAsset: 'assets/svgs/crossword.svg',
                   title: 'Составь слово',
                   subtitle:
                       'Угадай удмуртское слово по значению — собери буквы по порядку.',
@@ -89,7 +90,7 @@ class _GamesHubPageState extends State<GamesHubPage> {
                 ),
                 SizedBox(height: 12.h),
                 _GameCard(
-                  emoji: '✅',
+                  svgAsset: 'assets/svgs/true_false.svg',
                   title: 'Верно / Неверно',
                   subtitle: 'Картинка и удмуртское слово — совпадают ли они?',
                   iconColor: Theme.of(
@@ -179,14 +180,14 @@ class _StatsBanner extends StatelessWidget {
 }
 
 class _GameCard extends StatelessWidget {
-  final String emoji;
+  final String svgAsset;
   final String title;
   final String subtitle;
   final Color iconColor;
   final VoidCallback onTap;
 
   const _GameCard({
-    required this.emoji,
+    required this.svgAsset,
     required this.title,
     required this.subtitle,
     required this.iconColor,
@@ -222,7 +223,12 @@ class _GameCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
                 child: Center(
-                  child: Text(emoji, style: TextStyle(fontSize: 28.sp)),
+                  child: SvgPicture.asset(
+                    svgAsset,
+                    width: 32.w,
+                    height: 32.w,
+                    colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                  ),
                 ),
               ),
               SizedBox(width: 16.w),
