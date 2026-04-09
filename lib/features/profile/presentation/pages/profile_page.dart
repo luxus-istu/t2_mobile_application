@@ -165,7 +165,7 @@ final class ProfilePage extends StatelessWidget {
                     border: Border.all(
                       color: Theme.of(
                         ctx,
-                      ).colorScheme.onSurface.withValues(alpha: 0.1),
+                      ).colorScheme.primary.withValues(alpha: 0.3),
                     ),
                   ),
                   child: Column(
@@ -401,14 +401,16 @@ final class ProfilePage extends StatelessWidget {
                                   SizedBox(height: 16.h),
                                   ...stats.totalPerGame.entries.map((e) {
                                     final svgAsset = switch (e.key) {
-                                      'translate' => 'assets/svgs/translate.svg',
-                                      'compile'   => 'assets/svgs/crossword.svg',
-                                      'truefalse' => 'assets/svgs/true_false.svg',
+                                      'translate' =>
+                                        'assets/svgs/translate.svg',
+                                      'compile' => 'assets/svgs/crossword.svg',
+                                      'truefalse' =>
+                                        'assets/svgs/true_false.svg',
                                       _ => null,
                                     };
                                     final title = switch (e.key) {
                                       'translate' => 'Выбери перевод',
-                                      'compile'   => 'Составь слово',
+                                      'compile' => 'Составь слово',
                                       'truefalse' => 'Верно/Неверно',
                                       _ => e.key,
                                     };
@@ -424,7 +426,10 @@ final class ProfilePage extends StatelessWidget {
                                               width: 18.w,
                                               height: 18.w,
                                               colorFilter: ColorFilter.mode(
-                                                Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.7),
+                                                Theme.of(ctx)
+                                                    .colorScheme
+                                                    .onSurface
+                                                    .withValues(alpha: 0.7),
                                                 BlendMode.srcIn,
                                               ),
                                             ),
