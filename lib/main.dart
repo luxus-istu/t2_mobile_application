@@ -41,7 +41,7 @@ final class MyApp extends StatelessWidget {
           },
           child: MaterialApp.router(
             routerConfig: router,
-            title: 'T2 Mobile',
+            title: 'Удмурт кыл',
             theme: T2Theme.lightTheme,
             darkTheme: T2Theme.darkTheme,
           ),
