@@ -15,7 +15,10 @@ final class TrackingLocalDataSourceImpl implements TrackingLocalDataSource {
   final Box<String> visitedBox;
   final FlutterSecureStorage storage;
 
-  const TrackingLocalDataSourceImpl(this.visitedBox, this.storage);
+  const TrackingLocalDataSourceImpl(
+    @Named('visited_pois_box') this.visitedBox,
+    this.storage,
+  );
 
   @override
   Future<void> saveVisitedPoiId(String id) async {

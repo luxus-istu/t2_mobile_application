@@ -32,6 +32,14 @@ Future<void> configureDependencies() async {
   final visitedPoisBox = await Hive.openBox<String>('visited_pois_box');
   sl.registerSingleton<Box<String>>(
     visitedPoisBox,
+    instanceName: 'visited_pois_box',
+    dispose: (param) => param.close(),
+  );
+
+  final gameStatsBox = await Hive.openBox<String>('game_stats_box');
+  sl.registerSingleton<Box<String>>(
+    gameStatsBox,
+    instanceName: 'game_stats_box',
     dispose: (param) => param.close(),
   );
 
