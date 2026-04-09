@@ -43,5 +43,12 @@ Future<void> configureDependencies() async {
     dispose: (param) => param.close(),
   );
 
+  final lessonProgressBox = await Hive.openBox<String>('lesson_progress_box');
+  sl.registerSingleton<Box<String>>(
+    lessonProgressBox,
+    instanceName: 'lesson_progress_box',
+    dispose: (param) => param.close(),
+  );
+
   sl.init();
 }
