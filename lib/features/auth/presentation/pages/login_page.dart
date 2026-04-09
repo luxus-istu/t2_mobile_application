@@ -16,13 +16,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  bool isLogin = true;
   final _phoneCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
+  final _firstNameCtrl = TextEditingController();
+  final _lastNameCtrl = TextEditingController();
+  String _gender = 'male';
 
   @override
   void dispose() {
     _phoneCtrl.dispose();
     _passwordCtrl.dispose();
+    _firstNameCtrl.dispose();
+    _lastNameCtrl.dispose();
     super.dispose();
   }
 
@@ -66,17 +72,19 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'ВХОД',
+                        isLogin ? 'ВХОД' : 'РЕГИСТРАЦИЯ',
                         style: Theme.of(ctx).textTheme.displayLarge?.copyWith(
                           color: Theme.of(ctx).colorScheme.onSurface,
-                          fontSize: 48.sp,
+                          fontSize: 44.sp,
                           letterSpacing: -2,
                         ),
                         textAlign: TextAlign.left,
                       ),
                       SizedBox(height: 8.h),
                       Text(
-                        'Войдите или зарегистрируйтесь автоматически.',
+                        isLogin
+                            ? 'Войдите в свой аккаунт T2.'
+                            : 'Создайте новый аккаунт T2.',
                         style: TextStyle(
                           color: Theme.of(
                             ctx,
@@ -84,7 +92,69 @@ class _LoginPageState extends State<LoginPage> {
                           fontSize: 16.sp,
                         ),
                       ),
-                      SizedBox(height: 48.h),
+                      SizedBox(height: 32.h),
+                      if (!isLogin) ...[
+                        Row(
+                          children: [
+                            Expanded(
+                              child: T2TextField(
+                                label: 'Имя',
+                                controller: _firstNameCtrl,
+                              ),
+                            ),
+                            SizedBox(width: 16.w),
+                            Expanded(
+                              child: T2TextField(
+                                label: 'Фамилия',
+                                controller: _lastNameCtrl,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 16.h),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 16.w,
+                            vertical: 4.h,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(ctx).colorScheme.surface,
+                            borderRadius: BorderRadius.circular(16.r),
+                            border: Border.all(
+                              color: Theme.of(
+                                ctx,
+                              ).colorScheme.onSurface.withValues(alpha: 0.2),
+                            ),
+                          ),
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _gender,
+                              isExpanded: true,
+                              dropdownColor: Theme.of(ctx).colorScheme.surface,
+                              style: TextStyle(
+                                color: Theme.of(ctx).colorScheme.onSurface,
+                                fontSize: 16.sp,
+                              ),
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'male',
+                                  child: Text('Мужской'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'female',
+                                  child: Text('Женский'),
+                                ),
+                              ],
+                              onChanged: (val) {
+                                if (val != null) {
+                                  setState(() => _gender = val);
+                                }
+                              },
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+                      ],
                       T2TextField(
                         label: 'Номер телефона',
                         controller: _phoneCtrl,
@@ -103,23 +173,57 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: state is AuthLoading
                               ? null
                               : () {
-                                  ctx.read<AuthCubit>().submit(
-                                    _phoneCtrl.text.trim(),
-                                    _passwordCtrl.text,
-                                  );
+                                  if (isLogin) {
+                                    ctx.read<AuthCubit>().submitLogin(
+                                      _phoneCtrl.text.trim(),
+                                      _passwordCtrl.text,
+                                    );
+                                  } else {
+                                    ctx.read<AuthCubit>().submitRegister(
+                                      phone: _phoneCtrl.text.trim(),
+                                      password: _passwordCtrl.text,
+                                      firstName: _firstNameCtrl.text.trim(),
+                                      lastName: _lastNameCtrl.text.trim(),
+                                      gender: _gender,
+                                    );
+                                  }
                                 },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: T2Theme.magenta,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16.r),
+                            ),
+                          ),
                           child: state is AuthLoading
                               ? const CircularProgressIndicator(
                                   color: T2Theme.white,
                                 )
                               : Text(
-                                  'ПРОДОЛЖИТЬ',
+                                  isLogin ? 'ВОЙТИ' : 'ЗАРЕГИСТРИРОВАТЬСЯ',
                                   style: Theme.of(ctx).textTheme.displayLarge
                                       ?.copyWith(
                                         color: T2Theme.white,
-                                        fontSize: 18.sp,
+                                        fontSize: 20.sp,
                                       ),
                                 ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      TextButton(
+                        onPressed: () {
+                          setState(() {
+                            isLogin = !isLogin;
+                          });
+                        },
+                        child: Text(
+                          isLogin
+                              ? 'Нет аккаунта? Зарегистрируйтесь'
+                              : 'Уже есть аккаунт? Войдите',
+                          style: TextStyle(
+                            color: T2Theme.magenta,
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],

@@ -14,7 +14,7 @@ final class LoginUseCase
 
   @override
   Future<Either<Exception, UserEntity>> call(LoginParams params) async {
-    return await repository.loginOrRegister(params.phone, params.password);
+    return await repository.login(params.phone, params.password);
   }
 }
 

@@ -11,12 +11,36 @@ final class AuthRepositoryImpl implements AuthRepository {
   const AuthRepositoryImpl({required this.localDataSource});
 
   @override
-  Future<Either<Exception, UserEntity>> loginOrRegister(
+  Future<Either<Exception, UserEntity>> login(
     String phone,
     String password,
   ) async {
     try {
-      final userModel = await localDataSource.loginOrRegister(phone, password);
+      final userModel = await localDataSource.login(phone, password);
+      return userModel.fold((l) => Left(l), (r) => Right(r.toEntity()));
+    } on Exception catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Exception, UserEntity>> register(
+    String phone,
+    String password,
+    String firstName,
+    String lastName,
+    String gender,
+  ) async {
+    try {
+      final userModel = await localDataSource.register(
+        phone,
+        password,
+        firstName,
+        lastName,
+        gender,
+      );
       return userModel.fold((l) => Left(l), (r) => Right(r.toEntity()));
     } on Exception catch (e) {
       return Left(e);

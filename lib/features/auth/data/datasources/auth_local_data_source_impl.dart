@@ -15,7 +15,7 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   const AuthLocalDataSourceImpl(this.usersBox, this.storage);
 
   @override
-  Future<Either<Exception, UserModel>> loginOrRegister(
+  Future<Either<Exception, UserModel>> login(
     String phone,
     String password,
   ) async {
@@ -30,11 +30,42 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
           await storage.write(key: sessionKey, value: phone);
           return Right(existingUser);
         } else {
-          return Left(Exception('Invalid password'));
+          return Left(Exception('Неверный пароль'));
         }
       }
+      return Left(Exception('Пользователь с таким номером не найден'));
+    } on Exception catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
 
-      final newUser = UserModel(phone: phone, password: password);
+  @override
+  Future<Either<Exception, UserModel>> register(
+    String phone,
+    String password,
+    String firstName,
+    String lastName,
+    String gender,
+  ) async {
+    try {
+      final existingUser = usersBox.values.cast<UserModel?>().firstWhere(
+        (user) => user?.phone == phone,
+        orElse: () => null,
+      );
+
+      if (existingUser != null) {
+        return Left(Exception('Пользователь уже существует'));
+      }
+
+      final newUser = UserModel(
+        phone: phone,
+        password: password,
+        firstName: firstName,
+        lastName: lastName,
+        gender: gender,
+      );
       await usersBox.add(newUser);
       await storage.write(key: sessionKey, value: phone);
       return Right(newUser);
