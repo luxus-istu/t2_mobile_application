@@ -29,6 +29,8 @@ import 'package:t2_mobile_application/features/auth/domain/usecases/login_usecas
     as _i115;
 import 'package:t2_mobile_application/features/auth/domain/usecases/logout_usecase.dart'
     as _i208;
+import 'package:t2_mobile_application/features/auth/domain/usecases/register_usecase.dart'
+    as _i552;
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_cubit.dart'
     as _i135;
 import 'package:t2_mobile_application/features/settings/data/datasources/settings_local_data_source.dart'
@@ -101,15 +103,11 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i208.LogoutUseCase>(
       () => _i208.LogoutUseCase(gh<_i536.AuthRepository>()),
     );
+    gh.lazySingleton<_i552.RegisterUseCase>(
+      () => _i552.RegisterUseCase(gh<_i536.AuthRepository>()),
+    );
     gh.lazySingleton<_i470.TrackingRepository>(
       () => _i29.TrackingRepositoryImpl(gh<_i897.TrackingLocalDataSource>()),
-    );
-    gh.lazySingleton<_i135.AuthCubit>(
-      () => _i135.AuthCubit(
-        gh<_i115.LoginUseCase>(),
-        gh<_i709.CheckSessionUseCase>(),
-        gh<_i208.LogoutUseCase>(),
-      ),
     );
     gh.lazySingleton<_i801.SettingsCubit>(
       () => _i801.SettingsCubit(
@@ -119,6 +117,14 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i746.TrackingCubit>(
       () => _i746.TrackingCubit(gh<_i470.TrackingRepository>()),
+    );
+    gh.lazySingleton<_i135.AuthCubit>(
+      () => _i135.AuthCubit(
+        gh<_i115.LoginUseCase>(),
+        gh<_i552.RegisterUseCase>(),
+        gh<_i709.CheckSessionUseCase>(),
+        gh<_i208.LogoutUseCase>(),
+      ),
     );
     return this;
   }
