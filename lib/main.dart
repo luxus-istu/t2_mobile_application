@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:t2_mobile_application/core/config/router.dart';
 import 'package:t2_mobile_application/core/di/di.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
+import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/settings/presentation/bloc/settings_cubit.dart';
 import 'package:t2_mobile_application/features/settings/presentation/bloc/settings_state.dart';
 import 'package:t2_mobile_application/features/tracking/presentation/bloc/tracking_cubit.dart';
@@ -29,6 +30,7 @@ final class MyApp extends StatelessWidget {
         providers: [
           BlocProvider.value(value: sl<SettingsCubit>()..loadSettings()),
           BlocProvider.value(value: sl<TrackingCubit>()),
+          BlocProvider.value(value: sl<GamesCubit>()),
         ],
         child: BlocListener<SettingsCubit, SettingsState>(
           listener: (context, state) {

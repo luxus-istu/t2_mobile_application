@@ -42,7 +42,7 @@ final class HomePage extends StatelessWidget {
           SquaredButtons(
             icon: Icons.sports_esports_outlined,
             title: 'Игры',
-            path: '',
+            path: '/games',
           ),
           SquaredButtons(
             icon: Icons.person_outline,
