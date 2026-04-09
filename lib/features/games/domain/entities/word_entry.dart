@@ -6,6 +6,7 @@ class WordEntry extends Equatable {
   final String russian;
   final String category;
   final String emoji;
+  final String transcription;
 
   const WordEntry({
     required this.id,
@@ -13,8 +14,9 @@ class WordEntry extends Equatable {
     required this.russian,
     required this.category,
     required this.emoji,
+    this.transcription = '',
   });
 
   @override
-  List<Object?> get props => [id, udmurt, russian, category, emoji];
+  List<Object?> get props => [id, udmurt, russian, category, emoji, transcription];
 }
