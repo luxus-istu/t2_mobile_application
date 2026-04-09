@@ -36,7 +36,8 @@ android {
             jvmTarget.set(JvmTarget.JVM_21)
             freeCompilerArgs.addAll(
                 "-Xjvm-default=all",
-                "-opt-in=kotlin.RequiresOptIn"
+                "-opt-in=kotlin.RequiresOptIn",
+                "-Xlint:-options"
             )
         }
     }
