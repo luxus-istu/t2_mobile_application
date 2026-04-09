@@ -48,6 +48,18 @@ import 'package:t2_mobile_application/features/games/domain/usecases/get_words_u
     as _i568;
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart'
     as _i124;
+import 'package:t2_mobile_application/features/lessons/data/datasources/lessons_local_data_source.dart'
+    as _i370;
+import 'package:t2_mobile_application/features/lessons/data/datasources/lessons_local_data_source_impl.dart'
+    as _i435;
+import 'package:t2_mobile_application/features/lessons/data/repositories/lessons_repository_impl.dart'
+    as _i53;
+import 'package:t2_mobile_application/features/lessons/domain/repositories/lessons_repository.dart'
+    as _i369;
+import 'package:t2_mobile_application/features/lessons/domain/usecases/lesson_progress_usecases.dart'
+    as _i274;
+import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart'
+    as _i581;
 import 'package:t2_mobile_application/features/settings/data/datasources/settings_local_data_source.dart'
     as _i770;
 import 'package:t2_mobile_application/features/settings/data/models/settings_model.dart'
@@ -89,6 +101,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i558.FlutterSecureStorage>(),
       ),
     );
+    gh.lazySingleton<_i370.LessonsLocalDataSource>(
+      () => _i435.LessonsLocalDataSourceImpl(
+        gh<_i1055.Box<String>>(instanceName: 'lesson_progress_box'),
+        gh<_i558.FlutterSecureStorage>(),
+      ),
+    );
     gh.lazySingleton<_i897.TrackingLocalDataSource>(
       () => _i897.TrackingLocalDataSourceImpl(
         gh<_i738.Box<String>>(instanceName: 'visited_pois_box'),
@@ -106,6 +124,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i470.TrackingRepository>(
       () => _i29.TrackingRepositoryImpl(gh<_i897.TrackingLocalDataSource>()),
+    );
+    gh.lazySingleton<_i369.LessonsRepository>(
+      () => _i53.LessonsRepositoryImpl(gh<_i370.LessonsLocalDataSource>()),
     );
     gh.lazySingleton<_i746.TrackingCubit>(
       () => _i746.TrackingCubit(gh<_i470.TrackingRepository>()),
@@ -145,6 +166,12 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i552.RegisterUseCase>(
       () => _i552.RegisterUseCase(gh<_i536.AuthRepository>()),
     );
+    gh.lazySingleton<_i274.GetLessonProgressUseCase>(
+      () => _i274.GetLessonProgressUseCase(gh<_i369.LessonsRepository>()),
+    );
+    gh.lazySingleton<_i274.MarkWordViewedUseCase>(
+      () => _i274.MarkWordViewedUseCase(gh<_i369.LessonsRepository>()),
+    );
     gh.lazySingleton<_i801.SettingsCubit>(
       () => _i801.SettingsCubit(
         gh<_i1043.GetSettingsUseCase>(),
@@ -156,6 +183,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i568.GetWordsUseCase>(),
         gh<_i91.SaveGameResultUseCase>(),
         gh<_i91.GetGameStatsUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i581.LessonsCubit>(
+      () => _i581.LessonsCubit(
+        gh<_i568.GetWordsUseCase>(),
+        gh<_i274.GetLessonProgressUseCase>(),
+        gh<_i274.MarkWordViewedUseCase>(),
       ),
     );
     gh.lazySingleton<_i135.AuthCubit>(

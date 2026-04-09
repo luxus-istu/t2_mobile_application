@@ -10,6 +10,8 @@ import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state
 import 'package:t2_mobile_application/features/games/domain/entities/game_stats.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_state.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_state.dart';
 import 'package:t2_mobile_application/features/tracking/presentation/bloc/tracking_cubit.dart';
 
 final class ProfilePage extends StatelessWidget {
@@ -212,6 +214,89 @@ final class ProfilePage extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: 24.h),
+                // Lessons progress section
+                BlocProvider.value(
+                  value: sl<LessonsCubit>(),
+                  child: BlocBuilder<LessonsCubit, LessonsState>(
+                    builder: (_, state) {
+                      int viewed = 0;
+                      int total = 0;
+                      if (state is LessonsLoaded) {
+                        viewed = state.progress.viewedWordIds.length;
+                        total = state.groupedWords.values
+                            .expand((element) => element)
+                            .length;
+                      }
+                      final pct = total > 0 ? viewed / total : 0.0;
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Изученные слова',
+                            style: TextStyle(
+                              color: Theme.of(ctx).colorScheme.onSurface,
+                              fontSize: 20.sp,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 12.h),
+                          Container(
+                            padding: EdgeInsets.all(16.w),
+                            decoration: BoxDecoration(
+                              color: Theme.of(ctx).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(
+                                color: Theme.of(
+                                  ctx,
+                                ).colorScheme.primary.withValues(alpha: 0.3),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      '$viewed / $total',
+                                      style: TextStyle(
+                                        color: T2Theme.magenta,
+                                        fontSize: 32.sp,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    Text(
+                                      '${(pct * 100).toInt()}%',
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          ctx,
+                                        ).colorScheme.onSurface,
+                                        fontSize: 20.sp,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 12.h),
+                                LinearProgressIndicator(
+                                  value: pct,
+                                  backgroundColor: Theme.of(ctx)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.1),
+                                  color: T2Theme.magenta,
+                                  minHeight: 8.h,
+                                  borderRadius: BorderRadius.circular(4),
+                                ),
+                              ],
+                            ),
+                          ),
+                          SizedBox(height: 24.h),
+                        ],
+                      );
+                    },
+                  ),
+                ),
                 // Games stats section
                 BlocProvider.value(
                   value: sl<GamesCubit>(),
@@ -237,41 +322,66 @@ final class ProfilePage extends StatelessWidget {
                               color: Theme.of(ctx).colorScheme.surface,
                               borderRadius: BorderRadius.circular(16),
                               border: Border.all(
-                                color: const Color(0xFF8800CC).withValues(alpha: 0.3),
+                                color: const Color(
+                                  0xFF8800CC,
+                                ).withValues(alpha: 0.3),
                               ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        Text('Всего ответов',
-                                            style: TextStyle(
-                                                color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
-                                                fontSize: 13.sp)),
-                                        Text('${stats.totalAnswered}',
-                                            style: TextStyle(
-                                                color: const Color(0xFF8800CC),
-                                                fontSize: 32.sp,
-                                                fontWeight: FontWeight.w900)),
+                                        Text(
+                                          'Всего ответов',
+                                          style: TextStyle(
+                                            color: Theme.of(ctx)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.6),
+                                            fontSize: 13.sp,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${stats.totalAnswered}',
+                                          style: TextStyle(
+                                            color: const Color(0xFF8800CC),
+                                            fontSize: 32.sp,
+                                            fontWeight: FontWeight.w900,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
                                       children: [
-                                        Text('Точность',
-                                            style: TextStyle(
-                                                color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
-                                                fontSize: 13.sp)),
-                                        Text('${(stats.accuracy * 100).toInt()}%',
-                                            style: TextStyle(
-                                                color: Theme.of(ctx).colorScheme.onSurface,
-                                                fontSize: 24.sp,
-                                                fontWeight: FontWeight.w700)),
+                                        Text(
+                                          'Точность',
+                                          style: TextStyle(
+                                            color: Theme.of(ctx)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.6),
+                                            fontSize: 13.sp,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${(stats.accuracy * 100).toInt()}%',
+                                          style: TextStyle(
+                                            color: Theme.of(
+                                              ctx,
+                                            ).colorScheme.onSurface,
+                                            fontSize: 24.sp,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -279,31 +389,61 @@ final class ProfilePage extends StatelessWidget {
                                 SizedBox(height: 12.h),
                                 LinearProgressIndicator(
                                   value: stats.accuracy,
-                                  backgroundColor: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.1),
+                                  backgroundColor: Theme.of(ctx)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.1),
                                   color: const Color(0xFF8800CC),
                                   minHeight: 8.h,
                                   borderRadius: BorderRadius.circular(4),
                                 ),
-                                if (stats.totalPerGame.isNotEmpty) ...[SizedBox(height: 16.h),
+                                if (stats.totalPerGame.isNotEmpty) ...[
+                                  SizedBox(height: 16.h),
                                   ...stats.totalPerGame.entries.map((e) {
-                                    final label = switch (e.key) {
-                                      'translate' => '🔤 Выбери перевод',
-                                      'compile' => '🔀 Составь слово',
-                                      'truefalse' => '✅ Верно/Неверно',
+                                    final svgAsset = switch (e.key) {
+                                      'translate' => 'assets/svgs/translate.svg',
+                                      'compile'   => 'assets/svgs/crossword.svg',
+                                      'truefalse' => 'assets/svgs/true_false.svg',
+                                      _ => null,
+                                    };
+                                    final title = switch (e.key) {
+                                      'translate' => 'Выбери перевод',
+                                      'compile'   => 'Составь слово',
+                                      'truefalse' => 'Верно/Неверно',
                                       _ => e.key,
                                     };
-                                    final correct = stats.correctPerGame[e.key] ?? 0;
+                                    final correct =
+                                        stats.correctPerGame[e.key] ?? 0;
                                     return Padding(
                                       padding: EdgeInsets.only(bottom: 8.h),
                                       child: Row(
                                         children: [
-                                          Expanded(child: Text(label,
-                                              style: TextStyle(fontSize: 14.sp))),
-                                          Text('$correct/${e.value}',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  color: const Color(0xFF8800CC),
-                                                  fontSize: 14.sp)),
+                                          if (svgAsset != null) ...[
+                                            SvgPicture.asset(
+                                              svgAsset,
+                                              width: 18.w,
+                                              height: 18.w,
+                                              colorFilter: ColorFilter.mode(
+                                                Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.7),
+                                                BlendMode.srcIn,
+                                              ),
+                                            ),
+                                            SizedBox(width: 8.w),
+                                          ],
+                                          Expanded(
+                                            child: Text(
+                                              title,
+                                              style: TextStyle(fontSize: 14.sp),
+                                            ),
+                                          ),
+                                          Text(
+                                            '$correct/${e.value}',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: const Color(0xFF8800CC),
+                                              fontSize: 14.sp,
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     );
