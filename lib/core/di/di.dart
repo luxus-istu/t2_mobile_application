@@ -1,8 +1,10 @@
-import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_ce_flutter/adapters.dart';
 import 'package:injectable/injectable.dart';
+import 'package:t2_mobile_application/features/auth/data/models/user_model.dart';
+import 'package:t2_mobile_application/features/settings/data/models/settings_model.dart';
+import 'package:t2_mobile_application/hive_registrar.g.dart';
 
 import './di.config.dart';
 
@@ -10,21 +12,28 @@ final sl = GetIt.instance;
 
 @InjectableInit()
 Future<void> configureDependencies() async {
-  await dotenv.load();
   await Hive.initFlutter();
+  Hive.registerAdapters();
 
-  final dio = Dio(
-    BaseOptions(
-      connectTimeout: const Duration(seconds: 30),
-      receiveTimeout: const Duration(seconds: 30),
-      sendTimeout: const Duration(seconds: 30),
-      responseType: ResponseType.json,
-    ),
+  sl.registerSingleton<FlutterSecureStorage>(const FlutterSecureStorage());
+
+  final usersBox = await Hive.openBox<UserModel>('users_box');
+  sl.registerSingleton<Box<UserModel>>(
+    usersBox,
+    dispose: (param) => param.close(),
   );
 
-  dio.interceptors.add(LogInterceptor());
+  final settingsBox = await Hive.openBox<SettingsModel>('settings_box');
+  sl.registerSingleton<Box<SettingsModel>>(
+    settingsBox,
+    dispose: (param) => param.close(),
+  );
 
-  sl.registerSingleton<Dio>(dio);
+  final visitedPoisBox = await Hive.openBox<String>('visited_pois_box');
+  sl.registerSingleton<Box<String>>(
+    visitedPoisBox,
+    dispose: (param) => param.close(),
+  );
 
   sl.init();
 }
