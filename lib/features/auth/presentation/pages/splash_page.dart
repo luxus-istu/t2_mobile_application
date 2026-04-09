@@ -5,6 +5,8 @@ import 'package:t2_mobile_application/core/di/di.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_cubit.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state.dart';
+import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
+import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -29,6 +31,8 @@ class _SplashPageState extends State<SplashPage> {
       child: BlocListener<AuthCubit, AuthState>(
         listener: (ctx, state) {
           if (state is Authenticated) {
+            sl<GamesCubit>().loadStats();
+            sl<LessonsCubit>().loadData();
             ctx.go('/home');
           } else if (state is AuthInitial || state is AuthError) {
             ctx.go('/login');
