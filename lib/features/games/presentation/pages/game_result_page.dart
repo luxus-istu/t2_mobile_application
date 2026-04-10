@@ -165,7 +165,10 @@ class _GameResultPageState extends State<GameResultPage> {
                   ),
                   SizedBox(height: 12.h),
                   TextButton(
-                    onPressed: () => ctx.go('/home'),
+                    onPressed: () {
+                      sl<GamesCubit>().loadStats();
+                      ctx.go('/home');
+                    },
                     child: Text(
                       'На главную',
                       style: TextStyle(
