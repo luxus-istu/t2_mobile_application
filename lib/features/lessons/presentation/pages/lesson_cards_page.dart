@@ -73,160 +73,170 @@ class _LessonsCardsPageState extends State<LessonsCardsPage> {
         backgroundColor: Theme.of(ctx).colorScheme.surface,
         elevation: 0,
       ),
-      body: Stack(
-        children: [
-          BlocProvider.value(
-            value: sl<LessonsCubit>(),
-            child: Column(
-              children: [
-                Expanded(
-                  child: PageView.builder(
-                    controller: _pageCtrl,
-                    itemCount: _words.length,
-                    onPageChanged: (idx) {
-                      _onCardViewed(idx);
-                    },
-                    itemBuilder: (ctx, idx) {
-                      final w = _words[idx];
-                      return Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24.w,
-                          vertical: 32.h,
-                        ),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Theme.of(ctx).colorScheme.surface,
-                            borderRadius: BorderRadius.circular(32.r),
-                            border: Border.all(
-                              color: Theme.of(
-                                ctx,
-                              ).colorScheme.onSurface.withValues(alpha: 0.1),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.05),
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
+      body: SafeArea(
+        child: Stack(
+          children: [
+            BlocProvider.value(
+              value: sl<LessonsCubit>(),
+              child: Column(
+                children: [
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageCtrl,
+                      itemCount: _words.length,
+                      onPageChanged: (idx) {
+                        _onCardViewed(idx);
+                      },
+                      itemBuilder: (ctx, idx) {
+                        final w = _words[idx];
+                        return Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24.w,
+                            vertical: 32.h,
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(w.emoji, style: TextStyle(fontSize: 90.sp)),
-                              SizedBox(height: 32.h),
-                              Text(
-                                w.udmurt,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: T2Theme.magenta,
-                                  fontSize: 42.sp,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              SizedBox(height: 12.h),
-                              Text(
-                                w.transcription,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(ctx).colorScheme.onSurface
-                                      .withValues(alpha: 0.5),
-                                  fontSize: 18.sp,
-                                  fontStyle: FontStyle.italic,
-                                ),
-                              ),
-                              SizedBox(height: 24.h),
-                              Container(
-                                width: 60.w,
-                                height: 2,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(ctx).colorScheme.surface,
+                              borderRadius: BorderRadius.circular(32.r),
+                              border: Border.all(
                                 color: Theme.of(
                                   ctx,
                                 ).colorScheme.onSurface.withValues(alpha: 0.1),
                               ),
-                              SizedBox(height: 24.h),
-                              Text(
-                                w.russian,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Theme.of(ctx).colorScheme.onSurface,
-                                  fontSize: 24.sp,
-                                  fontWeight: FontWeight.w600,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 8),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  w.emoji,
+                                  style: TextStyle(fontSize: 90.sp),
+                                ),
+                                SizedBox(height: 32.h),
+                                Text(
+                                  w.udmurt,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: T2Theme.magenta,
+                                    fontSize: 42.sp,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                                SizedBox(height: 12.h),
+                                Text(
+                                  w.transcription,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Theme.of(ctx).colorScheme.onSurface
+                                        .withValues(alpha: 0.5),
+                                    fontSize: 18.sp,
+                                    fontStyle: FontStyle.italic,
+                                  ),
+                                ),
+                                SizedBox(height: 24.h),
+                                Container(
+                                  width: 60.w,
+                                  height: 2,
+                                  color: Theme.of(ctx).colorScheme.onSurface
+                                      .withValues(alpha: 0.1),
+                                ),
+                                SizedBox(height: 24.h),
+                                Text(
+                                  w.russian,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Theme.of(ctx).colorScheme.onSurface,
+                                    fontSize: 24.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(24.w),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            if (_pageCtrl.page! > 0) {
+                              _pageCtrl.previousPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            Icons.arrow_back_ios_new_rounded,
+                            size: 28.w,
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.all(24.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          if (_pageCtrl.page! > 0) {
-                            _pageCtrl.previousPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
+                        BlocBuilder<LessonsCubit, LessonsState>(
+                          builder: (ctx, state) {
+                            int viewed = 0;
+                            if (state is LessonsLoaded) {
+                              viewed = _words
+                                  .where(
+                                    (w) => state.progress.viewedWordIds
+                                        .contains(w.id),
+                                  )
+                                  .length;
+                            }
+                            return Text(
+                              '$viewed / ${_words.length}',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.bold,
+                              ),
                             );
-                          }
-                        },
-                        icon: Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          size: 28.w,
+                          },
                         ),
-                      ),
-                      BlocBuilder<LessonsCubit, LessonsState>(
-                        builder: (ctx, state) {
-                          int viewed = 0;
-                          if (state is LessonsLoaded) {
-                            viewed = _words
-                                .where(
-                                  (w) => state.progress.viewedWordIds.contains(
-                                    w.id,
-                                  ),
-                                )
-                                .length;
-                          }
-                          return Text(
-                            '$viewed / ${_words.length}',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          if (_pageCtrl.page! < _words.length - 1) {
-                            _pageCtrl.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        },
-                        icon: Icon(Icons.arrow_forward_ios_rounded, size: 28.w),
-                      ),
-                    ],
+                        IconButton(
+                          onPressed: () {
+                            if (_pageCtrl.page! < _words.length - 1) {
+                              _pageCtrl.nextPage(
+                                duration: const Duration(milliseconds: 300),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          icon: Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 28.w,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Align(
-            alignment: Alignment.topCenter,
-            child: ConfettiWidget(
-              confettiController: _confettiCtrl,
-              blastDirectionality: BlastDirectionality.explosive,
-              shouldLoop: false,
-              colors: const [T2Theme.magenta, Colors.white, Color(0xFF00C853)],
+            Align(
+              alignment: Alignment.topCenter,
+              child: ConfettiWidget(
+                confettiController: _confettiCtrl,
+                blastDirectionality: BlastDirectionality.explosive,
+                shouldLoop: false,
+                colors: const [
+                  T2Theme.magenta,
+                  Colors.white,
+                  Color(0xFF00C853),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

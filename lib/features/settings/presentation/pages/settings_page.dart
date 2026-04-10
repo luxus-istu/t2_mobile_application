@@ -22,55 +22,57 @@ final class SettingsPage extends StatelessWidget {
         elevation: 0,
         iconTheme: IconThemeData(color: Theme.of(ctx).colorScheme.onSurface),
       ),
-      body: BlocBuilder<SettingsCubit, SettingsState>(
-        builder: (context, state) {
-          if (state is SettingsLoading) {
-            return Center(
-              child: CircularProgressIndicator(color: T2Theme.magenta),
-            );
-          }
-          if (state is SettingsError) {
-            return Center(
-              child: Text(
-                state.message,
-                style: TextStyle(color: T2Theme.magenta),
-              ),
-            );
-          }
-          if (state is SettingsLoaded) {
-            final settings = state.settings;
-            return ListView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
-              children: [
-                _buildSwitchTile(
-                  context: context,
-                  title: 'Звук',
-                  value: settings.soundEnabled,
-                  icon: Icons.volume_up_outlined,
-                  onChanged: (val) =>
-                      context.read<SettingsCubit>().toggleSound(val),
+      body: SafeArea(
+        child: BlocBuilder<SettingsCubit, SettingsState>(
+          builder: (context, state) {
+            if (state is SettingsLoading) {
+              return Center(
+                child: CircularProgressIndicator(color: T2Theme.magenta),
+              );
+            }
+            if (state is SettingsError) {
+              return Center(
+                child: Text(
+                  state.message,
+                  style: TextStyle(color: T2Theme.magenta),
                 ),
-                _buildSwitchTile(
-                  context: context,
-                  title: 'Уведомления',
-                  value: settings.notificationsEnabled,
-                  icon: Icons.notifications_none_outlined,
-                  onChanged: (val) =>
-                      context.read<SettingsCubit>().toggleNotifications(val),
-                ),
-                _buildSwitchTile(
-                  context: context,
-                  title: 'Геолокация',
-                  value: settings.geolocationEnabled,
-                  icon: Icons.location_on_outlined,
-                  onChanged: (val) =>
-                      context.read<SettingsCubit>().toggleGeolocation(val),
-                ),
-              ],
-            );
-          }
-          return const SizedBox.shrink();
-        },
+              );
+            }
+            if (state is SettingsLoaded) {
+              final settings = state.settings;
+              return ListView(
+                padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 24.h),
+                children: [
+                  _buildSwitchTile(
+                    context: context,
+                    title: 'Звук',
+                    value: settings.soundEnabled,
+                    icon: Icons.volume_up_outlined,
+                    onChanged: (val) =>
+                        context.read<SettingsCubit>().toggleSound(val),
+                  ),
+                  _buildSwitchTile(
+                    context: context,
+                    title: 'Уведомления',
+                    value: settings.notificationsEnabled,
+                    icon: Icons.notifications_none_outlined,
+                    onChanged: (val) =>
+                        context.read<SettingsCubit>().toggleNotifications(val),
+                  ),
+                  _buildSwitchTile(
+                    context: context,
+                    title: 'Геолокация',
+                    value: settings.geolocationEnabled,
+                    icon: Icons.location_on_outlined,
+                    onChanged: (val) =>
+                        context.read<SettingsCubit>().toggleGeolocation(val),
+                  ),
+                ],
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }

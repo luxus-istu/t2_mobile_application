@@ -28,19 +28,21 @@ class _SplashPageState extends State<SplashPage> {
   Widget build(BuildContext ctx) {
     return BlocProvider.value(
       value: sl<AuthCubit>(),
-      child: BlocListener<AuthCubit, AuthState>(
-        listener: (ctx, state) {
-          if (state is Authenticated) {
-            sl<GamesCubit>().loadStats();
-            sl<LessonsCubit>().loadData();
-            ctx.go('/home');
-          } else if (state is AuthInitial || state is AuthError) {
-            ctx.go('/login');
-          }
-        },
-        child: const Scaffold(
-          body: Center(
-            child: CircularProgressIndicator(color: T2Theme.magenta),
+      child: SafeArea(
+        child: BlocListener<AuthCubit, AuthState>(
+          listener: (ctx, state) {
+            if (state is Authenticated) {
+              sl<GamesCubit>().loadStats();
+              sl<LessonsCubit>().loadData();
+              ctx.go('/home');
+            } else if (state is AuthInitial || state is AuthError) {
+              ctx.go('/login');
+            }
+          },
+          child: const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(color: T2Theme.magenta),
+            ),
           ),
         ),
       ),
