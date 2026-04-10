@@ -35,10 +35,7 @@ class T2TopSnackBar extends StatefulWidget {
 
     overlay.insert(entry);
     Future.delayed(duration, () {
-      if (entry.mounted) {
-        // The widget handles its own removal animation internally
-        // but we trigger the dismissal logic here.
-      }
+      if (entry.mounted) {}
     });
   }
 
@@ -65,7 +62,6 @@ class _T2TopSnackBarState extends State<T2TopSnackBar>
 
     _ctrl.forward();
 
-    // Auto-dismiss logic coordinated with duration
     Future.delayed(const Duration(seconds: 3), () {
       if (mounted) _dismiss();
     });

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart'; // Required for input formatters
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -11,6 +11,7 @@ import 'package:t2_mobile_application/features/auth/presentation/widgets/t2_text
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
 import 'package:t2_mobile_application/core/widgets/t2_top_snack_bar.dart';
+
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -21,7 +22,6 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
 
-  // 1. Initialize with +7
   final _phoneCtrl = TextEditingController(text: '+7');
   final _passwordCtrl = TextEditingController();
   final _firstNameCtrl = TextEditingController();
@@ -31,13 +31,11 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    // 2. Add listener to lock the +7 prefix
     _phoneCtrl.addListener(_onPhoneChanged);
   }
 
   void _onPhoneChanged() {
     final text = _phoneCtrl.text;
-    // If user tries to delete +7, put it back and move cursor to end
     if (!text.startsWith('+7')) {
       _phoneCtrl.value = _phoneCtrl.value.copyWith(
         text: '+7',
@@ -57,10 +55,8 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  // Validation Logic
   bool _isValid() {
     final phone = _phoneCtrl.text.trim();
-    // Regex for +7 followed by exactly 10 digits
     final phoneRegex = RegExp(r'^\+7\d{10}$');
 
     if (!phoneRegex.hasMatch(phone)) {
@@ -200,7 +196,6 @@ class _LoginPageState extends State<LoginPage> {
                         label: 'Номер телефона',
                         controller: _phoneCtrl,
                         keyboardType: TextInputType.phone,
-                        // Ensure only numbers can be typed after +
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
                           LengthLimitingTextInputFormatter(12),
