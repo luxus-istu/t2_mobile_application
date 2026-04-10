@@ -24,6 +24,8 @@ class _LessonsCardsPageState extends State<LessonsCardsPage> {
     duration: const Duration(seconds: 5),
   );
   List<WordEntry> _words = [];
+  final Set<int> _unlockedMarkIndices = {};
+  int? _lastIndex;
 
   @override
   void initState() {
@@ -31,6 +33,11 @@ class _LessonsCardsPageState extends State<LessonsCardsPage> {
     final state = sl<LessonsCubit>().state;
     if (state is LessonsLoaded) {
       _words = state.groupedWords[widget.topic] ?? [];
+      for (int i = 0; i < _words.length; i++) {
+        if (state.progress.viewedWordIds.contains(_words[i].id)) {
+          _unlockedMarkIndices.add(i);
+        }
+      }
       if (_words.isNotEmpty) {
         _onCardViewed(0);
       }
@@ -39,6 +46,16 @@ class _LessonsCardsPageState extends State<LessonsCardsPage> {
 
   void _onCardViewed(int idx) {
     if (_words.isEmpty) return;
+
+    if (_lastIndex != null && _lastIndex != idx) {
+      if (!_unlockedMarkIndices.contains(_lastIndex)) {
+        setState(() {
+          _unlockedMarkIndices.add(_lastIndex!);
+        });
+      }
+    }
+    _lastIndex = idx;
+
     sl<LessonsCubit>().markWordViewed(_words[idx].id);
     if (idx == _words.length - 1) {
       _confettiCtrl.play();
@@ -111,51 +128,72 @@ class _LessonsCardsPageState extends State<LessonsCardsPage> {
                                 ),
                               ],
                             ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                            child: Stack(
+                              alignment: Alignment.center,
                               children: [
-                                Text(
-                                  w.emoji,
-                                  style: TextStyle(fontSize: 90.sp),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      w.emoji,
+                                      style: TextStyle(fontSize: 90.sp),
+                                    ),
+                                    SizedBox(height: 32.h),
+                                    Text(
+                                      w.udmurt,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: T2Theme.magenta,
+                                        fontSize: 42.sp,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ),
+                                    SizedBox(height: 12.h),
+                                    Text(
+                                      w.transcription,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Theme.of(ctx)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.5),
+                                        fontSize: 18.sp,
+                                        fontStyle: FontStyle.italic,
+                                      ),
+                                    ),
+                                    SizedBox(height: 24.h),
+                                    Container(
+                                      width: 60.w,
+                                      height: 2,
+                                      color: Theme.of(ctx).colorScheme.onSurface
+                                          .withValues(alpha: 0.1),
+                                    ),
+                                    SizedBox(height: 24.h),
+                                    Text(
+                                      w.russian,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Theme.of(
+                                          ctx,
+                                        ).colorScheme.onSurface,
+                                        fontSize: 24.sp,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                SizedBox(height: 32.h),
-                                Text(
-                                  w.udmurt,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: T2Theme.magenta,
-                                    fontSize: 42.sp,
-                                    fontWeight: FontWeight.w900,
+                                if (_unlockedMarkIndices.contains(idx))
+                                  Positioned(
+                                    top: 24.h,
+                                    right: 24.w,
+                                    child: Icon(
+                                      Icons.check_circle,
+                                      color: T2Theme.magenta.withValues(
+                                        alpha: 0.8,
+                                      ),
+                                      size: 32.w,
+                                    ),
                                   ),
-                                ),
-                                SizedBox(height: 12.h),
-                                Text(
-                                  w.transcription,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Theme.of(ctx).colorScheme.onSurface
-                                        .withValues(alpha: 0.5),
-                                    fontSize: 18.sp,
-                                    fontStyle: FontStyle.italic,
-                                  ),
-                                ),
-                                SizedBox(height: 24.h),
-                                Container(
-                                  width: 60.w,
-                                  height: 2,
-                                  color: Theme.of(ctx).colorScheme.onSurface
-                                      .withValues(alpha: 0.1),
-                                ),
-                                SizedBox(height: 24.h),
-                                Text(
-                                  w.russian,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Theme.of(ctx).colorScheme.onSurface,
-                                    fontSize: 24.sp,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
                               ],
                             ),
                           ),

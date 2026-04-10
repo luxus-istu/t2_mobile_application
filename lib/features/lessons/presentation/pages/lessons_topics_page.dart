@@ -86,6 +86,20 @@ class _LessonsTopicsPageState extends State<LessonsTopicsPage> {
                     final totalCount = words.length;
                     final progressPct = viewedCount / totalCount;
 
+                    final isPassed = viewedCount == totalCount;
+                    final isStarted =
+                        viewedCount > 0 && viewedCount < totalCount;
+
+                    final borderColor = isPassed
+                        ? const Color(0xFFA7FC00).withValues(alpha: 0.3)
+                        : isStarted
+                        ? Theme.of(
+                            ctx,
+                          ).colorScheme.primary.withValues(alpha: 0.3)
+                        : Theme.of(
+                            ctx,
+                          ).colorScheme.onSurface.withValues(alpha: 0.1);
+
                     return Material(
                       color: Theme.of(ctx).colorScheme.surface,
                       borderRadius: BorderRadius.circular(20.r),
@@ -97,50 +111,63 @@ class _LessonsTopicsPageState extends State<LessonsTopicsPage> {
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
-                              color: Theme.of(
-                                ctx,
-                              ).colorScheme.onSurface.withValues(alpha: 0.1),
+                              color: borderColor,
+                              width: (isPassed || isStarted) ? 2 : 1,
                             ),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                _getCategoryTitle(cat),
-                                style: TextStyle(
-                                  fontSize: 18.sp,
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(ctx).colorScheme.onSurface,
-                                ),
-                              ),
-                              SizedBox(height: 16.h),
                               Row(
                                 children: [
                                   Expanded(
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(4.r),
-                                      child: LinearProgressIndicator(
-                                        value: progressPct,
-                                        backgroundColor: Theme.of(ctx)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.1),
-                                        color: T2Theme.magenta,
-                                        minHeight: 6.h,
+                                    child: Text(
+                                      _getCategoryTitle(cat),
+                                      style: TextStyle(
+                                        fontSize: 18.sp,
+                                        fontWeight: FontWeight.bold,
+                                        color: Theme.of(
+                                          ctx,
+                                        ).colorScheme.onSurface,
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 12.w),
-                                  Text(
-                                    '$viewedCount / $totalCount',
-                                    style: TextStyle(
-                                      fontSize: 14.sp,
-                                      fontWeight: FontWeight.w600,
-                                      color: Theme.of(ctx).colorScheme.onSurface
-                                          .withValues(alpha: 0.6),
+                                  if (isPassed)
+                                    const Icon(
+                                      Icons.check_circle,
+                                      color: Color(0xFFA7FC00),
                                     ),
-                                  ),
                                 ],
+                              ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                isPassed
+                                    ? 'МОЛОДЕЦ'
+                                    : '$viewedCount / $totalCount',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontWeight: FontWeight.w900,
+                                  fontFamily: T2Theme.fontT2HalvarBreit,
+                                  color: isPassed
+                                      ? const Color(0xFFA7FC00)
+                                      : Theme.of(ctx).colorScheme.onSurface
+                                            .withValues(alpha: 0.6),
+                                ),
+                              ),
+                              SizedBox(height: 16.h),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(4.r),
+                                child: LinearProgressIndicator(
+                                  value: progressPct,
+                                  backgroundColor: Theme.of(ctx)
+                                      .colorScheme
+                                      .onSurface
+                                      .withValues(alpha: 0.1),
+                                  color: isPassed
+                                      ? const Color(0xFFA7FC00)
+                                      : T2Theme.magenta,
+                                  minHeight: 6.h,
+                                ),
                               ),
                             ],
                           ),
