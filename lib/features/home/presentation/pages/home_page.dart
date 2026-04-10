@@ -25,36 +25,51 @@ final class HomePage extends StatelessWidget {
         backgroundColor: Theme.of(ctx).colorScheme.surface,
         elevation: 0,
       ),
-      body: GridView(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          mainAxisExtent: 170.h,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 16.w),
+            child: Column(
+              children: [
+                GridView(
+                  padding: EdgeInsets.symmetric(vertical: 8.h),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                    mainAxisExtent: 170.h,
+                  ),
+                  children: [
+                    SquaredButtons(
+                      icon: Icons.school_outlined,
+                      title: 'Обучение',
+                      path: '/lessons',
+                    ),
+                    SquaredButtons(
+                      icon: Icons.sports_esports_outlined,
+                      title: 'Игры',
+                      path: '/games',
+                    ),
+                    SquaredButtons(
+                      icon: Icons.person_outline,
+                      title: 'Профиль',
+                      path: '/profile',
+                    ),
+                    SquaredButtons(
+                      icon: Icons.settings_outlined,
+                      title: 'Настройки',
+                      path: '/settings',
+                    ),
+                  ],
+                ),
+                Image.asset("assets/imgs/t2_find_lang.png"),
+                Image.asset("assets/imgs/footer.png"),
+              ],
+            ),
+          ),
         ),
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
-        children: [
-          SquaredButtons(
-            icon: Icons.school_outlined,
-            title: 'Обучение',
-            path: '/lessons',
-          ),
-          SquaredButtons(
-            icon: Icons.sports_esports_outlined,
-            title: 'Игры',
-            path: '/games',
-          ),
-          SquaredButtons(
-            icon: Icons.person_outline,
-            title: 'Профиль',
-            path: '/profile',
-          ),
-          SquaredButtons(
-            icon: Icons.settings_outlined,
-            title: 'Настройки',
-            path: '/settings',
-          ),
-        ],
       ),
     );
   }
