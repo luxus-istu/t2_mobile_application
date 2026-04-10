@@ -23,7 +23,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'g1',
       udmurt: 'ӟечбуресь',
-      transcription: '[ӟечбуресь]',
+      transcription: '[дзечбурэсь]',
       russian: 'здравствуйте',
       category: 'приветствие',
       emoji: '👋',
@@ -31,7 +31,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'g2',
       udmurt: 'чырткем',
-      transcription: '[чырткем]',
+      transcription: '[чырткэм]',
       russian: 'привет',
       category: 'приветствие',
       emoji: '🙋',
@@ -47,7 +47,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'g4',
       udmurt: 'ӟеч лу',
-      transcription: '[ӟеч лу]',
+      transcription: '[дзеч лу]',
       russian: 'до свидания',
       category: 'приветствие',
       emoji: '👋',
@@ -55,7 +55,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'g5',
       udmurt: 'бур ӵукна',
-      transcription: '[бур ӵукна]',
+      transcription: '[бур чукна]',
       russian: 'доброе утро',
       category: 'приветствие',
       emoji: '🌅',
@@ -72,7 +72,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'n1',
       udmurt: 'одӥг',
-      transcription: '[одӥг]',
+      transcription: '[одыг]',
       russian: 'один',
       category: 'числа',
       emoji: '1️⃣',
@@ -177,7 +177,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'wa4',
       udmurt: 'ӟичы',
-      transcription: '[ӟичы]',
+      transcription: '[дзичи]',
       russian: 'лисица',
       category: 'дикие животные',
       emoji: '🦊',
@@ -193,7 +193,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'wa6',
       udmurt: 'коньы',
-      transcription: '[коньы]',
+      transcription: '[коны]',
       russian: 'белка',
       category: 'дикие животные',
       emoji: '🐿️',
@@ -201,7 +201,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'wa7',
       udmurt: 'ӵушъял',
-      transcription: '[ӵушъял]',
+      transcription: '[чушъял]',
       russian: 'ёж',
       category: 'дикие животные',
       emoji: '🦔',
@@ -291,7 +291,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f2',
       udmurt: 'йӧл',
-      transcription: '[йӧл]',
+      transcription: '[йол]',
       russian: 'молоко',
       category: 'еда',
       emoji: '🥛',
@@ -299,7 +299,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f3',
       udmurt: 'ӝук',
-      transcription: '[ӝук]',
+      transcription: '[джук]',
       russian: 'каша',
       category: 'еда',
       emoji: '🥣',
@@ -307,7 +307,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f4',
       udmurt: 'пельнянь',
-      transcription: '[пельнянь]',
+      transcription: '[пэльнянь]',
       russian: 'пельмени',
       category: 'еда',
       emoji: '🥟',
@@ -323,7 +323,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f6',
       udmurt: 'кукей',
-      transcription: '[кукей]',
+      transcription: '[кукэй]',
       russian: 'яйцо',
       category: 'еда',
       emoji: '🥚',
@@ -331,7 +331,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f7',
       udmurt: 'сüль',
-      transcription: '[сüль]',
+      transcription: '[сюль]',
       russian: 'мясо',
       category: 'еда',
       emoji: '🥩',
@@ -339,7 +339,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'f8',
       udmurt: 'вöй',
-      transcription: '[вöй]',
+      transcription: '[вой]',
       russian: 'масло',
       category: 'еда',
       emoji: '🧈',
@@ -388,7 +388,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'fm5',
       udmurt: 'песянай',
-      transcription: '[песянай]',
+      transcription: '[пэсянай]',
       russian: 'бабушка',
       category: 'семья',
       emoji: '👵',
@@ -396,7 +396,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'fm6',
       udmurt: 'песятай',
-      transcription: '[песятай]',
+      transcription: '[пэсятай]',
       russian: 'дедушка',
       category: 'семья',
       emoji: '👴',
@@ -453,7 +453,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'v4',
       udmurt: 'кешыр',
-      transcription: '[кешыр]',
+      transcription: '[кэшыр]',
       russian: 'морковь',
       category: 'овощи',
       emoji: '🥕',
@@ -470,7 +470,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'c1',
       udmurt: 'тӧдьы',
-      transcription: '[тӧдьы]',
+      transcription: '[тодьы]',
       russian: 'белый',
       category: 'цвета',
       emoji: '⬜',
@@ -478,7 +478,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'c2',
       udmurt: 'сьӧд',
-      transcription: '[сьӧд]',
+      transcription: '[сёд]',
       russian: 'чёрный',
       category: 'цвета',
       emoji: '⬛',
@@ -494,7 +494,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'c4',
       udmurt: 'ӵуж',
-      transcription: '[ӵуж]',
+      transcription: '[чуж]',
       russian: 'жёлтый',
       category: 'цвета',
       emoji: '🟨',
@@ -518,7 +518,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'c7',
       udmurt: 'льӧль',
-      transcription: '[льӧль]',
+      transcription: '[лёль]',
       russian: 'розовый',
       category: 'цвета',
       emoji: '🩷',
@@ -560,7 +560,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'p1',
       udmurt: 'Мон шумпотӥсько',
-      transcription: '[Мон шумпотӥсько]',
+      transcription: '[Мон шумпотисько]',
       russian: 'Я рада(рад)',
       category: 'фразы',
       emoji: '😊',
@@ -576,7 +576,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'p3',
       udmurt: 'Мон тонэ яратӥсько',
-      transcription: '[Мон тонэ яратӥсько]',
+      transcription: '[Мон тонэ яратисько]',
       russian: 'Я тебя люблю',
       category: 'фразы',
       emoji: '❤️',
@@ -592,7 +592,7 @@ final class GamesLocalDataSourceImpl implements GamesLocalDataSource {
     WordEntry(
       id: 'p5',
       udmurt: 'Мынам воже потэ',
-      transcription: '[Мынам воже потэ]',
+      transcription: '[Мынам вожэ потэ]',
       russian: 'Я злюсь',
       category: 'фразы',
       emoji: '😠',
