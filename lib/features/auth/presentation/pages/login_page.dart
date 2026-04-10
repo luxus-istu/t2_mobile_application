@@ -10,7 +10,7 @@ import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state
 import 'package:t2_mobile_application/features/auth/presentation/widgets/t2_text_field.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
-
+import 'package:t2_mobile_application/core/widgets/t2_top_snack_bar.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -82,12 +82,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message, style: const TextStyle(color: T2Theme.white)),
-        backgroundColor: T2Theme.magenta,
-      ),
-    );
+    T2TopSnackBar.show(context, message);
   }
 
   @override
@@ -100,11 +95,10 @@ class _LoginPageState extends State<LoginPage> {
             if (state is AuthError) {
               _showError(state.message);
             } else if (state is Authenticated) {
-              ScaffoldMessenger.of(ctx).showSnackBar(
-                const SnackBar(
-                  content: Text('Успешный вход'),
-                  backgroundColor: Colors.green,
-                ),
+              T2TopSnackBar.show(
+                ctx,
+                'Успешный вход',
+                backgroundColor: Colors.green,
               );
               sl<GamesCubit>().loadStats();
               sl<LessonsCubit>().loadData();

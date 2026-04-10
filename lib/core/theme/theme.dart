@@ -48,6 +48,16 @@ final class T2Theme {
         ),
       ),
     ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: magenta,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentTextStyle: const TextStyle(
+        fontFamily: fontT2HalvarBreit,
+        fontWeight: FontWeight.w900,
+        color: white,
+      ),
+    ),
   );
 
   static ThemeData get lightTheme => ThemeData(
@@ -80,6 +90,16 @@ final class T2Theme {
           fontWeight: FontWeight.w900,
           letterSpacing: 1.2,
         ),
+      ),
+    ),
+    snackBarTheme: SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+      backgroundColor: magenta,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      contentTextStyle: const TextStyle(
+        fontFamily: fontT2HalvarBreit,
+        fontWeight: FontWeight.w900,
+        color: white,
       ),
     ),
   );
