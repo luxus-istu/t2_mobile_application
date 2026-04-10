@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
 
@@ -7,6 +8,7 @@ class T2TextField extends StatelessWidget {
   final TextEditingController controller;
   final bool isPassword;
   final TextInputType keyboardType;
+  final List<TextInputFormatter>? inputFormatters;
 
   const T2TextField({
     super.key,
@@ -14,16 +16,20 @@ class T2TextField extends StatelessWidget {
     required this.controller,
     this.isPassword = false,
     this.keyboardType = TextInputType.text,
+    this.inputFormatters = const [],
   });
 
   @override
   Widget build(BuildContext ctx) {
     return TextField(
+      inputFormatters: inputFormatters,
       controller: controller,
       obscureText: isPassword,
       keyboardType: keyboardType,
       style: keyboardType == TextInputType.phone
-          ? T2Theme.numberStyle.copyWith(color: Theme.of(ctx).colorScheme.onSurface)
+          ? T2Theme.numberStyle.copyWith(
+              color: Theme.of(ctx).colorScheme.onSurface,
+            )
           : TextStyle(color: Theme.of(ctx).colorScheme.onSurface),
       decoration: InputDecoration(
         labelText: label,

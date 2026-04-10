@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart'; // Required for input formatters
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -19,19 +20,74 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
-  final _phoneCtrl = TextEditingController();
+
+  // 1. Initialize with +7
+  final _phoneCtrl = TextEditingController(text: '+7');
   final _passwordCtrl = TextEditingController();
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   String _gender = 'male';
 
   @override
+  void initState() {
+    super.initState();
+    // 2. Add listener to lock the +7 prefix
+    _phoneCtrl.addListener(_onPhoneChanged);
+  }
+
+  void _onPhoneChanged() {
+    final text = _phoneCtrl.text;
+    // If user tries to delete +7, put it back and move cursor to end
+    if (!text.startsWith('+7')) {
+      _phoneCtrl.value = _phoneCtrl.value.copyWith(
+        text: '+7',
+        selection: const TextSelection.collapsed(offset: 2),
+        composing: TextRange.empty,
+      );
+    }
+  }
+
+  @override
   void dispose() {
+    _phoneCtrl.removeListener(_onPhoneChanged);
     _phoneCtrl.dispose();
     _passwordCtrl.dispose();
     _firstNameCtrl.dispose();
     _lastNameCtrl.dispose();
     super.dispose();
+  }
+
+  // Validation Logic
+  bool _isValid() {
+    final phone = _phoneCtrl.text.trim();
+    // Regex for +7 followed by exactly 10 digits
+    final phoneRegex = RegExp(r'^\+7\d{10}$');
+
+    if (!phoneRegex.hasMatch(phone)) {
+      _showError('Введите полный номер (+7 и 10 цифр)');
+      return false;
+    }
+    if (_passwordCtrl.text.length < 6) {
+      _showError('Пароль должен быть не менее 6 символов');
+      return false;
+    }
+    if (!isLogin) {
+      if (_firstNameCtrl.text.trim().isEmpty ||
+          _lastNameCtrl.text.trim().isEmpty) {
+        _showError('Заполните имя и фамилию');
+        return false;
+      }
+    }
+    return true;
+  }
+
+  void _showError(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(color: T2Theme.white)),
+        backgroundColor: T2Theme.magenta,
+      ),
+    );
   }
 
   @override
@@ -42,26 +98,14 @@ class _LoginPageState extends State<LoginPage> {
         body: BlocConsumer<AuthCubit, AuthState>(
           listener: (ctx, state) {
             if (state is AuthError) {
-              ScaffoldMessenger.of(ctx).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    state.message,
-                    style: const TextStyle(color: T2Theme.white),
-                  ),
-                  backgroundColor: T2Theme.magenta,
-                ),
-              );
+              _showError(state.message);
             } else if (state is Authenticated) {
               ScaffoldMessenger.of(ctx).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    'Добро пожаловать, ${state.user.phone}!',
-                    style: const TextStyle(color: T2Theme.white),
-                  ),
+                const SnackBar(
+                  content: Text('Успешный вход'),
                   backgroundColor: Colors.green,
                 ),
               );
-              // Reload per-user data for the newly authenticated user
               sl<GamesCubit>().loadStats();
               sl<LessonsCubit>().loadData();
               ctx.go('/home');
@@ -151,9 +195,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ),
                               ],
                               onChanged: (val) {
-                                if (val != null) {
-                                  setState(() => _gender = val);
-                                }
+                                if (val != null) setState(() => _gender = val);
                               },
                             ),
                           ),
@@ -164,6 +206,11 @@ class _LoginPageState extends State<LoginPage> {
                         label: 'Номер телефона',
                         controller: _phoneCtrl,
                         keyboardType: TextInputType.phone,
+                        // Ensure only numbers can be typed after +
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
+                          LengthLimitingTextInputFormatter(12),
+                        ],
                       ),
                       SizedBox(height: 16.h),
                       T2TextField(
@@ -178,19 +225,21 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: state is AuthLoading
                               ? null
                               : () {
-                                  if (isLogin) {
-                                    ctx.read<AuthCubit>().submitLogin(
-                                      _phoneCtrl.text.trim(),
-                                      _passwordCtrl.text,
-                                    );
-                                  } else {
-                                    ctx.read<AuthCubit>().submitRegister(
-                                      phone: _phoneCtrl.text.trim(),
-                                      password: _passwordCtrl.text,
-                                      firstName: _firstNameCtrl.text.trim(),
-                                      lastName: _lastNameCtrl.text.trim(),
-                                      gender: _gender,
-                                    );
+                                  if (_isValid()) {
+                                    if (isLogin) {
+                                      ctx.read<AuthCubit>().submitLogin(
+                                        _phoneCtrl.text.trim(),
+                                        _passwordCtrl.text,
+                                      );
+                                    } else {
+                                      ctx.read<AuthCubit>().submitRegister(
+                                        phone: _phoneCtrl.text.trim(),
+                                        password: _passwordCtrl.text,
+                                        firstName: _firstNameCtrl.text.trim(),
+                                        lastName: _lastNameCtrl.text.trim(),
+                                        gender: _gender,
+                                      );
+                                    }
                                   }
                                 },
                           style: ElevatedButton.styleFrom(
