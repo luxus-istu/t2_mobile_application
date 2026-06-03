@@ -9,36 +9,75 @@ jobs:
   release:
     name: Build and Create Release
     runs-on: ubuntu-latest
+    environment: production
     permissions:
       contents: write
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
+
+      - name: Set up Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: ${{ vars.JAVA_VERSION || '17' }}
+          distribution: 'oracle'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          channel: 'stable'
-          cache: true
+          flutter-version: ${{ vars.FLUTTER_VERSION || '3.24.0' }}
+          channel: stable
 
-      - name: Create .env file from secrets
+      - name: Create .env file
         run: |
           echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
           echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
 
-      - name: Install dependencies
-        run: flutter pub get
+      - name: Validate keystore filename
+        run: |
+          if [ -z "${{ vars.KEYSTORE_FILE_NAME }}" ]; then
+            echo "ERROR: KEYSTORE_FILE_NAME variable is not set"
+            exit 1
+          fi
+          echo "Using keystore filename: ${{ vars.KEYSTORE_FILE_NAME }}"
 
-      - name: Generate files
-        run: flutter pub run build_runner build --delete-conflicting-outputs
+      - name: Create keystore file
+        env:
+          KEYSTORE_FILE: ${{ secrets.KEYSTORE_FILE }}
+        run: |
+          mkdir -p android/app
+          echo "$KEYSTORE_FILE" | base64 -d > "android/app/${{ vars.KEYSTORE_FILE_NAME }}"
+
+      - name: Create key.properties
+        run: |
+          echo "storePassword=${{ secrets.KEYSTORE_PASSWORD }}" > android/key.properties
+          echo "keyPassword=${{ secrets.KEY_PASSWORD }}" >> android/key.properties
+          echo "keyAlias=${{ secrets.KEY_ALIAS }}" >> android/key.properties
+          echo "storeFile=${{ vars.KEYSTORE_FILE_NAME }}" >> android/key.properties
+
+      - name: Verify keystore and key.properties
+        run: |
+          echo "Keystore file:"
+          ls -la "android/app/${{ vars.KEYSTORE_FILE_NAME }}" || echo "Keystore file not found"
+          echo "key.properties file:"
+          cat android/key.properties || echo "key.properties file not found"
+
+      - name: Install dependencies
+        run: flutter pub get --no-example --enforce-lockfile
+
+      - name: Run generators
+        run: dart run build_runner build --delete-conflicting-outputs
 
       - name: Build APK
-        run: flutter build apk --release
+        run: flutter build apk --split-per-abi --release --split-debug-info=build/app/outputs/symbols --obfuscate
 
-      - name: Build AppBundle
-        run: flutter build appbundle --release
+      - name: Build AAB
+        run: flutter build appbundle --split-debug-info=build/app/outputs/symbols --obfuscate --release
 
       - name: Bump version and generate changelog
         id: changelog
@@ -53,5 +92,5 @@ jobs:
           name: Release ${{ steps.changelog.outputs.new_tag }}
           body: ${{ steps.changelog.outputs.changelog }}
           files: |
-            build/app/outputs/flutter-apk/app-release.apk
-            build/app/outputs/bundle/release/app-release.aab
+            build/app/outputs/apk/release/*.apk
+            build/app/outputs/bundle/release/*.aab
