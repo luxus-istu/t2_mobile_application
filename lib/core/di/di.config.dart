@@ -18,6 +18,8 @@ import 'package:t2_mobile_application/features/auth/data/datasources/auth_local_
     as _i93;
 import 'package:t2_mobile_application/features/auth/data/datasources/auth_local_data_source_impl.dart'
     as _i292;
+import 'package:t2_mobile_application/features/auth/data/datasources/auth_remote_data_source.dart'
+    as _i538;
 import 'package:t2_mobile_application/features/auth/data/models/user_model.dart'
     as _i762;
 import 'package:t2_mobile_application/features/auth/data/repositories/auth_repository_impl.dart'
@@ -38,6 +40,8 @@ import 'package:t2_mobile_application/features/games/data/datasources/games_loca
     as _i138;
 import 'package:t2_mobile_application/features/games/data/datasources/games_local_data_source_impl.dart'
     as _i984;
+import 'package:t2_mobile_application/features/games/data/datasources/games_remote_data_source.dart'
+    as _i456;
 import 'package:t2_mobile_application/features/games/data/repositories/games_repository_impl.dart'
     as _i776;
 import 'package:t2_mobile_application/features/games/domain/repositories/games_repository.dart'
@@ -52,6 +56,8 @@ import 'package:t2_mobile_application/features/lessons/data/datasources/lessons_
     as _i370;
 import 'package:t2_mobile_application/features/lessons/data/datasources/lessons_local_data_source_impl.dart'
     as _i435;
+import 'package:t2_mobile_application/features/lessons/data/datasources/lessons_remote_data_source.dart'
+    as _i866;
 import 'package:t2_mobile_application/features/lessons/data/repositories/lessons_repository_impl.dart'
     as _i53;
 import 'package:t2_mobile_application/features/lessons/domain/repositories/lessons_repository.dart'
@@ -76,6 +82,8 @@ import 'package:t2_mobile_application/features/settings/presentation/bloc/settin
     as _i801;
 import 'package:t2_mobile_application/features/tracking/data/datasources/tracking_local_data_source.dart'
     as _i897;
+import 'package:t2_mobile_application/features/tracking/data/datasources/tracking_remote_data_source.dart'
+    as _i492;
 import 'package:t2_mobile_application/features/tracking/data/repositories/tracking_repository_impl.dart'
     as _i29;
 import 'package:t2_mobile_application/features/tracking/domain/repositories/tracking_repository.dart'
@@ -101,6 +109,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i558.FlutterSecureStorage>(),
       ),
     );
+    gh.lazySingleton<_i456.GamesRemoteDataSource>(
+      () => _i456.GamesRemoteDataSourceImpl(),
+    );
     gh.lazySingleton<_i370.LessonsLocalDataSource>(
       () => _i435.LessonsLocalDataSourceImpl(
         gh<_i1055.Box<String>>(instanceName: 'lesson_progress_box'),
@@ -122,11 +133,26 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i558.FlutterSecureStorage>(),
       ),
     );
-    gh.lazySingleton<_i470.TrackingRepository>(
-      () => _i29.TrackingRepositoryImpl(gh<_i897.TrackingLocalDataSource>()),
+    gh.lazySingleton<_i492.TrackingRemoteDataSource>(
+      () => _i492.TrackingRemoteDataSourceImpl(),
     );
-    gh.lazySingleton<_i369.LessonsRepository>(
-      () => _i53.LessonsRepositoryImpl(gh<_i370.LessonsLocalDataSource>()),
+    gh.lazySingleton<_i437.GamesRepository>(
+      () => _i776.GamesRepositoryImpl(
+        gh<_i138.GamesLocalDataSource>(),
+        gh<_i456.GamesRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i538.AuthRemoteDataSource>(
+      () => _i538.AuthRemoteDataSourceImpl(),
+    );
+    gh.lazySingleton<_i866.LessonsRemoteDataSource>(
+      () => _i866.LessonsRemoteDataSourceImpl(),
+    );
+    gh.lazySingleton<_i470.TrackingRepository>(
+      () => _i29.TrackingRepositoryImpl(
+        gh<_i897.TrackingLocalDataSource>(),
+        gh<_i492.TrackingRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i746.TrackingCubit>(
       () => _i746.TrackingCubit(gh<_i470.TrackingRepository>()),
@@ -137,14 +163,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i797.UpdateSettingsUseCase>(
       () => _i797.UpdateSettingsUseCase(gh<_i261.SettingsRepository>()),
     );
-    gh.lazySingleton<_i536.AuthRepository>(
-      () => _i751.AuthRepositoryImpl(
-        localDataSource: gh<_i93.AuthLocalDataSource>(),
-      ),
-    );
-    gh.lazySingleton<_i437.GamesRepository>(
-      () => _i776.GamesRepositoryImpl(gh<_i138.GamesLocalDataSource>()),
-    );
     gh.lazySingleton<_i91.SaveGameResultUseCase>(
       () => _i91.SaveGameResultUseCase(gh<_i437.GamesRepository>()),
     );
@@ -153,6 +171,18 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i568.GetWordsUseCase>(
       () => _i568.GetWordsUseCase(gh<_i437.GamesRepository>()),
+    );
+    gh.lazySingleton<_i536.AuthRepository>(
+      () => _i751.AuthRepositoryImpl(
+        localDataSource: gh<_i93.AuthLocalDataSource>(),
+        remoteDataSource: gh<_i538.AuthRemoteDataSource>(),
+      ),
+    );
+    gh.lazySingleton<_i369.LessonsRepository>(
+      () => _i53.LessonsRepositoryImpl(
+        gh<_i370.LessonsLocalDataSource>(),
+        gh<_i866.LessonsRemoteDataSource>(),
+      ),
     );
     gh.lazySingleton<_i709.CheckSessionUseCase>(
       () => _i709.CheckSessionUseCase(gh<_i536.AuthRepository>()),

@@ -4,6 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:t2_mobile_application/core/config/router.dart';
 import 'package:t2_mobile_application/core/di/di.dart';
 import 'package:t2_mobile_application/core/theme/theme.dart';
+import 'package:t2_mobile_application/core/config/supabase_config.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:t2_mobile_application/features/games/presentation/bloc/games_cubit.dart';
 import 'package:t2_mobile_application/features/lessons/presentation/bloc/lessons_cubit.dart';
 import 'package:t2_mobile_application/features/settings/presentation/bloc/settings_cubit.dart';
@@ -12,6 +14,8 @@ import 'package:t2_mobile_application/features/tracking/presentation/bloc/tracki
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+  await SupabaseConfig.init();
 
   await configureDependencies();
 
