@@ -29,6 +29,7 @@ dependencies:
   flutter_local_notifications: 21.0.0
   confetti: ^0.8.0
   audioplayers: ^6.6.0
+  supabase_flutter: ^2.12.4
 
 dev_dependencies:
   flutter_test:

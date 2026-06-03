@@ -1,14 +1,19 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:t2_mobile_application/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:t2_mobile_application/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:t2_mobile_application/features/auth/domain/entities/user_entity.dart';
 import 'package:t2_mobile_application/features/auth/domain/repositories/auth_repository.dart';
 
 @LazySingleton(as: AuthRepository)
 final class AuthRepositoryImpl implements AuthRepository {
   final AuthLocalDataSource localDataSource;
+  final AuthRemoteDataSource remoteDataSource;
 
-  const AuthRepositoryImpl({required this.localDataSource});
+  const AuthRepositoryImpl({
+    required this.localDataSource,
+    required this.remoteDataSource,
+  });
 
   @override
   Future<Either<Exception, UserEntity>> login(
@@ -16,8 +21,9 @@ final class AuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
-      final userModel = await localDataSource.login(phone, password);
-      return userModel.fold((l) => Left(l), (r) => Right(r.toEntity()));
+      final userModel = await remoteDataSource.login(phone, password);
+      await localDataSource.register(phone, password, userModel.firstName, userModel.lastName, userModel.gender);
+      return Right(userModel.toEntity());
     } on Exception catch (e) {
       return Left(e);
     } catch (e) {
@@ -34,14 +40,15 @@ final class AuthRepositoryImpl implements AuthRepository {
     String gender,
   ) async {
     try {
-      final userModel = await localDataSource.register(
+      final userModel = await remoteDataSource.register(
         phone,
         password,
         firstName,
         lastName,
         gender,
       );
-      return userModel.fold((l) => Left(l), (r) => Right(r.toEntity()));
+      await localDataSource.register(phone, password, firstName, lastName, gender);
+      return Right(userModel.toEntity());
     } on Exception catch (e) {
       return Left(e);
     } catch (e) {
@@ -52,8 +59,13 @@ final class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Exception, UserEntity>> checkSession() async {
     try {
-      final userModel = await localDataSource.checkSession();
-      return userModel.fold((l) => Left(l), (r) {
+      var userModel = await remoteDataSource.checkSession();
+      if (userModel != null) {
+        return Right(userModel.toEntity());
+      }
+      
+      final localSession = await localDataSource.checkSession();
+      return localSession.fold((l) => Left(l), (r) {
         if (r == null) {
           return Left(Exception('No active session'));
         }
@@ -66,8 +78,8 @@ final class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
-  @override
   Future<void> logout() async {
+    await remoteDataSource.logout();
     await localDataSource.logout();
   }
 }
