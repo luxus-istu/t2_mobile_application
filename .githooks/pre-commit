@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Get a list of staged dart files
+STAGED_DART_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.dart$')
+
+if [ -n "$STAGED_DART_FILES" ]; then
+  echo "Running dart format on staged files..."
+  
+  # Format the files
+  dart format $STAGED_DART_FILES
+  
+  # Re-stage the files after formatting
+  for file in $STAGED_DART_FILES; do
+    git add "$file"
+  done
+fi
+
+echo "Running flutter analyze..."
+flutter analyze
+
+if [ $? -ne 0 ]; then
+  echo "Flutter analyze found issues. Commit aborted."
+  exit 1
+fi
+
+echo "All checks passed! Proceeding with commit."
