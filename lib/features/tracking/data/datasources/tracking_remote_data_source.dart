@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:t2_mobile_application/core/config/supabase_config.dart';
 
 abstract interface class TrackingRemoteDataSource {
   Future<void> saveVisitedPoi(String id);
@@ -9,18 +9,21 @@ abstract interface class TrackingRemoteDataSource {
 
 @LazySingleton(as: TrackingRemoteDataSource)
 class TrackingRemoteDataSourceImpl implements TrackingRemoteDataSource {
-  final SupabaseClient _client = SupabaseConfig.client;
-  
-  String get _userId => _client.auth.currentUser?.id ?? '';
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String get _userId => _auth.currentUser?.uid ?? '';
 
   @override
   Future<void> saveVisitedPoi(String id) async {
     if (_userId.isEmpty) return;
     try {
-      await _client.from('user_progress').upsert({
+      final docId = '${_userId}_${id}_visited';
+      await _firestore.collection('user_progress').doc(docId).set({
         'user_id': _userId,
         'poi_id': id,
         'type': 'visited_poi',
+        'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       // Ignore errors if offline or table doesn't exist yet
@@ -31,13 +34,15 @@ class TrackingRemoteDataSourceImpl implements TrackingRemoteDataSource {
   Future<List<String>> getVisitedPois() async {
     if (_userId.isEmpty) return [];
     try {
-      final response = await _client
-          .from('user_progress')
-          .select('poi_id')
-          .eq('user_id', _userId)
-          .eq('type', 'visited_poi');
-      
-      return (response as List).map((e) => e['poi_id'] as String).toList();
+      final snapshot = await _firestore
+          .collection('user_progress')
+          .where('user_id', isEqualTo: _userId)
+          .where('type', isEqualTo: 'visited_poi')
+          .get();
+
+      return snapshot.docs
+          .map((doc) => doc.data()['poi_id'] as String)
+          .toList();
     } catch (e) {
       return [];
     }

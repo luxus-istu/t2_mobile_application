@@ -17,12 +17,18 @@ final class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Exception, UserEntity>> login(
-    String phone,
+    String email,
     String password,
   ) async {
     try {
-      final userModel = await remoteDataSource.login(phone, password);
-      await localDataSource.register(phone, password, userModel.firstName, userModel.lastName, userModel.gender);
+      final userModel = await remoteDataSource.login(email, password);
+      await localDataSource.register(
+        email,
+        password,
+        userModel.firstName,
+        userModel.lastName,
+        userModel.gender,
+      );
       return Right(userModel.toEntity());
     } on Exception catch (e) {
       return Left(e);
@@ -33,7 +39,7 @@ final class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Either<Exception, UserEntity>> register(
-    String phone,
+    String email,
     String password,
     String firstName,
     String lastName,
@@ -41,13 +47,38 @@ final class AuthRepositoryImpl implements AuthRepository {
   ) async {
     try {
       final userModel = await remoteDataSource.register(
-        phone,
+        email,
         password,
         firstName,
         lastName,
         gender,
       );
-      await localDataSource.register(phone, password, firstName, lastName, gender);
+      await localDataSource.register(
+        email,
+        password,
+        firstName,
+        lastName,
+        gender,
+      );
+      return Right(userModel.toEntity());
+    } on Exception catch (e) {
+      return Left(e);
+    } catch (e) {
+      return Left(Exception(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Exception, UserEntity>> anonymousLogin() async {
+    try {
+      final userModel = await remoteDataSource.anonymousLogin();
+      await localDataSource.register(
+        userModel.email,
+        userModel.password,
+        userModel.firstName,
+        userModel.lastName,
+        userModel.gender,
+      );
       return Right(userModel.toEntity());
     } on Exception catch (e) {
       return Left(e);
@@ -63,7 +94,7 @@ final class AuthRepositoryImpl implements AuthRepository {
       if (userModel != null) {
         return Right(userModel.toEntity());
       }
-      
+
       final localSession = await localDataSource.checkSession();
       return localSession.fold((l) => Left(l), (r) {
         if (r == null) {

@@ -13,8 +13,10 @@ final class SaveGameResultUseCase {
   final GamesRepository repository;
   const SaveGameResultUseCase(this.repository);
 
-  Future<void> call(SaveResultParams params) =>
-      repository.saveResult(gameKey: params.gameKey, isCorrect: params.isCorrect);
+  Future<void> call(SaveResultParams params) => repository.saveResult(
+    gameKey: params.gameKey,
+    isCorrect: params.isCorrect,
+  );
 }
 
 @lazySingleton

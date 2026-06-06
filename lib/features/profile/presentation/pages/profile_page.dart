@@ -50,11 +50,11 @@ final class ProfilePage extends StatelessWidget {
             BlocBuilder<AuthCubit, AuthState>(
               bloc: sl<AuthCubit>(),
               builder: (context, state) {
-                String phone = 'Загрузка...';
+                String email = 'Загрузка...';
                 String name = 'Пользователь T2';
                 String gender = 'male';
                 if (state is Authenticated) {
-                  phone = state.user.phone;
+                  email = state.user.email;
                   name = '${state.user.firstName} ${state.user.lastName}'
                       .trim();
                   gender = state.user.gender;
@@ -130,7 +130,7 @@ final class ProfilePage extends StatelessWidget {
                       ),
                       SizedBox(height: 4.h),
                       Text(
-                        phone,
+                        email,
                         style: TextStyle(
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w500,

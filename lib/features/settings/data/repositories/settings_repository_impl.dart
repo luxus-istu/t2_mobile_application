@@ -21,7 +21,11 @@ final class SettingsRepositoryImpl implements SettingsRepository {
   }
 
   @override
-  Future<Either<Exception, void>> updateSettings(SettingsEntity settings) async {
-    return await localDataSource.updateSettings(SettingsModel.fromEntity(settings));
+  Future<Either<Exception, void>> updateSettings(
+    SettingsEntity settings,
+  ) async {
+    return await localDataSource.updateSettings(
+      SettingsModel.fromEntity(settings),
+    );
   }
 }

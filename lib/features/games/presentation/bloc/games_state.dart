@@ -37,8 +37,14 @@ class QuizInProgress extends GamesState {
     required this.score,
   });
   @override
-  List<Object?> get props =>
-      [gameKey, question, options, currentIndex, totalQuestions, score];
+  List<Object?> get props => [
+    gameKey,
+    question,
+    options,
+    currentIndex,
+    totalQuestions,
+    score,
+  ];
 }
 
 class QuizAnswered extends GamesState {

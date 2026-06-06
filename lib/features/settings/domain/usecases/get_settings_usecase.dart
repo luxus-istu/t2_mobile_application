@@ -5,7 +5,8 @@ import 'package:t2_mobile_application/features/settings/domain/entities/settings
 import 'package:t2_mobile_application/features/settings/domain/repositories/settings_repository.dart';
 
 @lazySingleton
-final class GetSettingsUseCase implements UseCase<Either<Exception, SettingsEntity>, NoParams> {
+final class GetSettingsUseCase
+    implements UseCase<Either<Exception, SettingsEntity>, NoParams> {
   final SettingsRepository repository;
 
   const GetSettingsUseCase(this.repository);

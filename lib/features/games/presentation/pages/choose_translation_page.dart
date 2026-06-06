@@ -30,7 +30,7 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
       child: BlocConsumer<GamesCubit, GamesState>(
         listener: (ctx, state) {
           if (state is QuizAnswered) {
-             SoundHelper.playSound(state.isCorrect ? 'right.mp3' : 'error.mp3');
+            SoundHelper.playSound(state.isCorrect ? 'right.mp3' : 'error.mp3');
           }
           if (state is QuizComplete) {
             ctx.pushReplacement('/games/result', extra: state);
@@ -38,7 +38,9 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
         },
         builder: (ctx, state) {
           if (state is GamesLoading) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
           }
           if (state is QuizInProgress) {
             return QuizScaffold(
@@ -56,7 +58,9 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
                       color: Theme.of(ctx).colorScheme.surface,
                       borderRadius: BorderRadius.circular(24.r),
                       border: Border.all(
-                        color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.1),
+                        color: Theme.of(
+                          ctx,
+                        ).colorScheme.onSurface.withValues(alpha: 0.1),
                       ),
                     ),
                     child: Column(
@@ -73,18 +77,27 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
                         ),
                         SizedBox(height: 12.h),
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 12.w,
+                            vertical: 4.h,
+                          ),
                           decoration: BoxDecoration(
-                            color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.05),
+                            color: Theme.of(
+                              ctx,
+                            ).colorScheme.onSurface.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(20.r),
                             border: Border.all(
-                              color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.1),
+                              color: Theme.of(
+                                ctx,
+                              ).colorScheme.onSurface.withValues(alpha: 0.1),
                             ),
                           ),
                           child: Text(
                             state.question.category,
                             style: TextStyle(
-                              color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6), 
+                              color: Theme.of(
+                                ctx,
+                              ).colorScheme.onSurface.withValues(alpha: 0.6),
                               fontSize: 12.sp,
                             ),
                           ),
@@ -97,17 +110,21 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
                     'Выберите перевод:',
                     style: TextStyle(
                       fontSize: 16.sp,
-                      color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.6),
+                      color: Theme.of(
+                        ctx,
+                      ).colorScheme.onSurface.withValues(alpha: 0.6),
                     ),
                   ),
                   SizedBox(height: 12.h),
-                  ...state.options.map((opt) => Padding(
-                    padding: EdgeInsets.only(bottom: 10.h),
-                    child: _OptionButton(
-                      label: opt,
-                      onTap: () => sl<GamesCubit>().answerQuestion(opt),
+                  ...state.options.map(
+                    (opt) => Padding(
+                      padding: EdgeInsets.only(bottom: 10.h),
+                      child: _OptionButton(
+                        label: opt,
+                        onTap: () => sl<GamesCubit>().answerQuestion(opt),
+                      ),
                     ),
-                  )),
+                  ),
                 ],
               ),
             );
@@ -115,7 +132,9 @@ class _ChooseTranslationPageState extends State<ChooseTranslationPage> {
           if (state is QuizAnswered) {
             return QuizScaffold(
               title: 'Выбери перевод',
-              progress: (state.previous.currentIndex + 1) / state.previous.totalQuestions,
+              progress:
+                  (state.previous.currentIndex + 1) /
+                  state.previous.totalQuestions,
               score: state.previous.score,
               total: state.previous.totalQuestions,
               body: _AnswerFeedback(
@@ -221,13 +240,17 @@ class _AnswerFeedback extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               backgroundColor: color,
               shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.r)),
+                borderRadius: BorderRadius.circular(16.r),
+              ),
             ),
-            child: Text('Далее →',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.bold)),
+            child: Text(
+              'Далее →',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       ],

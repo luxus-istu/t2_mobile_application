@@ -15,21 +15,21 @@ final class LessonsRepositoryImpl implements LessonsRepository {
   Future<LessonProgress> getProgress() async {
     final localProgress = await _dataSource.getProgress();
     final remoteWords = await _remoteDataSource.getViewedWords();
-    
+
     // Sync missing to local
     for (var word in remoteWords) {
       if (!localProgress.viewedWordIds.contains(word)) {
         await _dataSource.markViewed(word);
       }
     }
-    
+
     // Sync missing to remote
     for (var word in localProgress.viewedWordIds) {
       if (!remoteWords.contains(word)) {
         await _remoteDataSource.markViewed(word);
       }
     }
-    
+
     return await _dataSource.getProgress();
   }
 

@@ -76,7 +76,7 @@ class _CompileWordPageState extends State<CompileWordPage>
       child: BlocConsumer<GamesCubit, GamesState>(
         listener: (ctx, state) {
           if (state is QuizAnswered) {
-             SoundHelper.playSound(state.isCorrect ? 'right.mp3' : 'error.mp3');
+            SoundHelper.playSound(state.isCorrect ? 'right.mp3' : 'error.mp3');
           }
           if (state is QuizComplete) {
             ctx.pushReplacement('/games/result', extra: state);

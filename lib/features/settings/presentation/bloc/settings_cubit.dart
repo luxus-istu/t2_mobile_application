@@ -12,10 +12,8 @@ final class SettingsCubit extends Cubit<SettingsState> {
   final GetSettingsUseCase _getSettingsUseCase;
   final UpdateSettingsUseCase _updateSettingsUseCase;
 
-  SettingsCubit(
-    this._getSettingsUseCase,
-    this._updateSettingsUseCase,
-  ) : super(const SettingsLoading());
+  SettingsCubit(this._getSettingsUseCase, this._updateSettingsUseCase)
+    : super(const SettingsLoading());
 
   Future<void> loadSettings() async {
     final result = await _getSettingsUseCase(const NoParams());
@@ -27,13 +25,10 @@ final class SettingsCubit extends Cubit<SettingsState> {
 
   Future<void> _update(SettingsEntity newSettings) async {
     final result = await _updateSettingsUseCase(newSettings);
-    result.fold(
-      (error) => emit(SettingsError(error.toString())),
-      (_) {
-        // Optimistically update
-        emit(SettingsLoaded(newSettings));
-      },
-    );
+    result.fold((error) => emit(SettingsError(error.toString())), (_) {
+      // Optimistically update
+      emit(SettingsLoaded(newSettings));
+    });
   }
 
   void toggleSound(bool value) {

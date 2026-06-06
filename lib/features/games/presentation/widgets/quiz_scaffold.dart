@@ -24,7 +24,9 @@ class QuizScaffold extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           title,
-          style: Theme.of(ctx).textTheme.displaySmall?.copyWith(fontSize: 22.sp),
+          style: Theme.of(
+            ctx,
+          ).textTheme.displaySmall?.copyWith(fontSize: 22.sp),
         ),
         backgroundColor: Theme.of(ctx).colorScheme.surface,
         elevation: 0,
@@ -47,17 +49,15 @@ class QuizScaffold extends StatelessWidget {
           preferredSize: Size.fromHeight(6.h),
           child: LinearProgressIndicator(
             value: progress,
-            backgroundColor:
-                Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.08),
+            backgroundColor: Theme.of(
+              ctx,
+            ).colorScheme.onSurface.withValues(alpha: 0.08),
             color: T2Theme.magenta,
             minHeight: 5.h,
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.w),
-        child: body,
-      ),
+      body: SingleChildScrollView(padding: EdgeInsets.all(16.w), child: body),
     );
   }
 }

@@ -16,6 +16,15 @@ final class AuthLoading extends AuthState {
   const AuthLoading();
 }
 
+final class AuthOtpSent extends AuthState {
+  final String verificationId;
+
+  const AuthOtpSent(this.verificationId);
+
+  @override
+  List<Object?> get props => [verificationId];
+}
+
 final class Authenticated extends AuthState {
   final UserEntity user;
 

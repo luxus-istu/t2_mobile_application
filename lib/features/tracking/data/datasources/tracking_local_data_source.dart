@@ -27,7 +27,7 @@ final class TrackingLocalDataSourceImpl implements TrackingLocalDataSource {
 
     final currentStr = visitedBox.get(phone) ?? '';
     final list = currentStr.split(',').where((e) => e.isNotEmpty).toList();
-    
+
     if (!list.contains(id)) {
       list.add(id);
       await visitedBox.put(phone, list.join(','));
