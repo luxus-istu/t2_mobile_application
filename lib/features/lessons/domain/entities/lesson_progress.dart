@@ -14,9 +14,7 @@ class LessonProgress extends Equatable {
     return LessonProgress(viewedWordIds: list.map((e) => e.toString()).toSet());
   }
 
-  Map<String, dynamic> toJson() => {
-    'viewedWordIds': viewedWordIds.toList(),
-  };
+  Map<String, dynamic> toJson() => {'viewedWordIds': viewedWordIds.toList()};
 
   @override
   List<Object?> get props => [viewedWordIds];

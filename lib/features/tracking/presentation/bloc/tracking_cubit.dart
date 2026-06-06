@@ -34,12 +34,9 @@ final class TrackingCubit extends Cubit<void> {
   Future<void> _loadPois() async {
     final visited = await _repository.getVisitedPois();
     _notifiedPoiIds = visited.toSet();
-    
+
     final result = await _repository.getPois();
-    result.fold(
-      (error) => null, 
-      (pois) => _pois = pois,
-    );
+    result.fold((error) => null, (pois) => _pois = pois);
   }
 
   List<PoiEntity> get visitedPois {

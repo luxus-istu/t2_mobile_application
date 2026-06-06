@@ -16,10 +16,7 @@ class LessonsLoaded extends LessonsState {
   final Map<String, List<WordEntry>> groupedWords;
   final LessonProgress progress;
 
-  const LessonsLoaded({
-    required this.groupedWords,
-    required this.progress,
-  });
+  const LessonsLoaded({required this.groupedWords, required this.progress});
 
   @override
   List<Object?> get props => [groupedWords, progress];

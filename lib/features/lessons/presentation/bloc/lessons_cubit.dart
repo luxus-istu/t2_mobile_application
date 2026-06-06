@@ -13,7 +13,7 @@ class LessonsCubit extends Cubit<LessonsState> {
   final MarkWordViewedUseCase _markViewed;
 
   LessonsCubit(this._getWords, this._getProgress, this._markViewed)
-      : super(const LessonsLoading());
+    : super(const LessonsLoading());
 
   Future<void> loadData() async {
     emit(const LessonsLoading());
@@ -38,7 +38,12 @@ class LessonsCubit extends Cubit<LessonsState> {
       if (!isAlreadyViewed) {
         await _markViewed(MarkWordViewedParams(wordId));
         final newProgress = state.progress.copyWithViewed(wordId);
-        emit(LessonsLoaded(groupedWords: state.groupedWords, progress: newProgress));
+        emit(
+          LessonsLoaded(
+            groupedWords: state.groupedWords,
+            progress: newProgress,
+          ),
+        );
       }
     }
   }

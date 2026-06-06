@@ -13,8 +13,7 @@ class GameStats extends Equatable {
     this.totalPerGame = const {},
   });
 
-  double get accuracy =>
-      totalAnswered == 0 ? 0 : totalCorrect / totalAnswered;
+  double get accuracy => totalAnswered == 0 ? 0 : totalCorrect / totalAnswered;
 
   GameStats copyWithResult({required String gameKey, required bool isCorrect}) {
     final newCorrectPerGame = Map<String, int>.from(correctPerGame);
@@ -32,20 +31,24 @@ class GameStats extends Equatable {
   }
 
   Map<String, dynamic> toJson() => {
-        'totalAnswered': totalAnswered,
-        'totalCorrect': totalCorrect,
-        'correctPerGame': correctPerGame,
-        'totalPerGame': totalPerGame,
-      };
+    'totalAnswered': totalAnswered,
+    'totalCorrect': totalCorrect,
+    'correctPerGame': correctPerGame,
+    'totalPerGame': totalPerGame,
+  };
 
   factory GameStats.fromJson(Map<String, dynamic> json) => GameStats(
-        totalAnswered: (json['totalAnswered'] as int?) ?? 0,
-        totalCorrect: (json['totalCorrect'] as int?) ?? 0,
-        correctPerGame: Map<String, int>.from(json['correctPerGame'] ?? {}),
-        totalPerGame: Map<String, int>.from(json['totalPerGame'] ?? {}),
-      );
+    totalAnswered: (json['totalAnswered'] as int?) ?? 0,
+    totalCorrect: (json['totalCorrect'] as int?) ?? 0,
+    correctPerGame: Map<String, int>.from(json['correctPerGame'] ?? {}),
+    totalPerGame: Map<String, int>.from(json['totalPerGame'] ?? {}),
+  );
 
   @override
-  List<Object?> get props =>
-      [totalAnswered, totalCorrect, correctPerGame, totalPerGame];
+  List<Object?> get props => [
+    totalAnswered,
+    totalCorrect,
+    correctPerGame,
+    totalPerGame,
+  ];
 }

@@ -5,6 +5,7 @@ import 'package:t2_mobile_application/features/auth/domain/usecases/check_sessio
 import 'package:t2_mobile_application/features/auth/domain/usecases/login_usecase.dart';
 import 'package:t2_mobile_application/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:t2_mobile_application/features/auth/domain/usecases/register_usecase.dart';
+import 'package:t2_mobile_application/features/auth/domain/usecases/anonymous_login_usecase.dart';
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_state.dart';
 
 @lazySingleton
@@ -13,12 +14,14 @@ final class AuthCubit extends Cubit<AuthState> {
   final RegisterUseCase _registerUseCase;
   final CheckSessionUseCase _checkSessionUseCase;
   final LogoutUseCase _logoutUseCase;
+  final AnonymousLoginUseCase _anonymousLoginUseCase;
 
   AuthCubit(
-    this._loginUseCase, 
+    this._loginUseCase,
     this._registerUseCase,
-    this._checkSessionUseCase, 
+    this._checkSessionUseCase,
     this._logoutUseCase,
+    this._anonymousLoginUseCase,
   ) : super(const AuthInitial());
 
   Future<void> checkSession() async {
@@ -32,8 +35,8 @@ final class AuthCubit extends Cubit<AuthState> {
     );
   }
 
-  Future<void> submitLogin(String phone, String password) async {
-    if (phone.isEmpty || password.isEmpty) {
+  Future<void> submitLogin(String email, String password) async {
+    if (email.isEmpty || password.isEmpty) {
       emit(const AuthError('Поля не могут быть пустыми'));
       return;
     }
@@ -41,7 +44,7 @@ final class AuthCubit extends Cubit<AuthState> {
     emit(const AuthLoading());
 
     final result = await _loginUseCase(
-      LoginParams(phone: phone, password: password),
+      LoginParams(email: email, password: password),
     );
 
     result.fold(
@@ -51,13 +54,17 @@ final class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> submitRegister({
-    required String phone,
+    required String email,
     required String password,
     required String firstName,
     required String lastName,
     required String gender,
   }) async {
-    if (phone.isEmpty || password.isEmpty || firstName.isEmpty || lastName.isEmpty || gender.isEmpty) {
+    if (email.isEmpty ||
+        password.isEmpty ||
+        firstName.isEmpty ||
+        lastName.isEmpty ||
+        gender.isEmpty) {
       emit(const AuthError('Все поля обязательны'));
       return;
     }
@@ -66,13 +73,24 @@ final class AuthCubit extends Cubit<AuthState> {
 
     final result = await _registerUseCase(
       RegisterParams(
-        phone: phone,
+        email: email,
         password: password,
         firstName: firstName,
         lastName: lastName,
         gender: gender,
       ),
     );
+
+    result.fold(
+      (failure) => emit(AuthError(failure.toString())),
+      (user) => emit(Authenticated(user)),
+    );
+  }
+
+  Future<void> submitAnonymous() async {
+    emit(const AuthLoading());
+
+    final result = await _anonymousLoginUseCase(const NoParams());
 
     result.fold(
       (failure) => emit(AuthError(failure.toString())),

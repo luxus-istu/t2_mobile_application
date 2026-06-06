@@ -28,21 +28,21 @@ final class TrackingRepositoryImpl implements TrackingRepository {
     final localPois = await localDataSource.getVisitedPoiIds();
     final remotePois = await remoteDataSource.getVisitedPois();
     final allPois = {...localPois, ...remotePois}.toList();
-    
+
     // Sync missing to local
     for (var poi in remotePois) {
       if (!localPois.contains(poi)) {
         await localDataSource.saveVisitedPoiId(poi);
       }
     }
-    
+
     // Sync missing to remote
     for (var poi in localPois) {
       if (!remotePois.contains(poi)) {
         await remoteDataSource.saveVisitedPoi(poi);
       }
     }
-    
+
     return allPois;
   }
 }

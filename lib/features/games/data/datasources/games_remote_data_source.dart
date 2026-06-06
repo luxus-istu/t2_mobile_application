@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:t2_mobile_application/core/config/supabase_config.dart';
 
 abstract interface class GamesRemoteDataSource {
   Future<void> saveResult({required String gameKey, required bool isCorrect});
@@ -9,18 +9,23 @@ abstract interface class GamesRemoteDataSource {
 
 @LazySingleton(as: GamesRemoteDataSource)
 class GamesRemoteDataSourceImpl implements GamesRemoteDataSource {
-  final SupabaseClient _client = SupabaseConfig.client;
-  
-  String get _userId => _client.auth.currentUser?.id ?? '';
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  String get _userId => _auth.currentUser?.uid ?? '';
 
   @override
-  Future<void> saveResult({required String gameKey, required bool isCorrect}) async {
+  Future<void> saveResult({
+    required String gameKey,
+    required bool isCorrect,
+  }) async {
     if (_userId.isEmpty) return;
     try {
-      await _client.from('user_progress').insert({
+      await _firestore.collection('user_progress').add({
         'user_id': _userId,
         'poi_id': gameKey,
         'type': isCorrect ? 'game_correct' : 'game_incorrect',
+        'timestamp': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       // Ignore
@@ -31,13 +36,20 @@ class GamesRemoteDataSourceImpl implements GamesRemoteDataSource {
   Future<List<Map<String, dynamic>>> getResults() async {
     if (_userId.isEmpty) return [];
     try {
-      final response = await _client
-          .from('user_progress')
-          .select('poi_id, type')
-          .eq('user_id', _userId)
-          .like('type', 'game_%');
-          
-      return List<Map<String, dynamic>>.from(response);
+      final snapshot = await _firestore
+          .collection('user_progress')
+          .where('user_id', isEqualTo: _userId)
+          .where('type', whereIn: ['game_correct', 'game_incorrect'])
+          .get();
+
+      return snapshot.docs
+          .map(
+            (doc) => {
+              'poi_id': doc.data()['poi_id'],
+              'type': doc.data()['type'],
+            },
+          )
+          .toList();
     } catch (e) {
       return [];
     }

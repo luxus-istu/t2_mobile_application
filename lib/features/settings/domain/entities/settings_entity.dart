@@ -24,5 +24,9 @@ class SettingsEntity extends Equatable {
   }
 
   @override
-  List<Object?> get props => [soundEnabled, notificationsEnabled, geolocationEnabled];
+  List<Object?> get props => [
+    soundEnabled,
+    notificationsEnabled,
+    geolocationEnabled,
+  ];
 }

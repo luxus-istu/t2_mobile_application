@@ -24,20 +24,37 @@ final router = GoRouter(
     GoRoute(path: '/', builder: (context, state) => const SplashPage()),
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/home', builder: (context, state) => const HomePage()),
-    GoRoute(path: '/settings', builder: (context, state) => const SettingsPage()),
+    GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
+    ),
     GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
     GoRoute(path: '/games', builder: (context, state) => const GamesHubPage()),
-    GoRoute(path: '/games/translate', builder: (context, state) => const ChooseTranslationPage()),
-    GoRoute(path: '/games/compile', builder: (context, state) => const CompileWordPage()),
-    GoRoute(path: '/games/truefalse', builder: (context, state) => const TrueFalsePage()),
+    GoRoute(
+      path: '/games/translate',
+      builder: (context, state) => const ChooseTranslationPage(),
+    ),
+    GoRoute(
+      path: '/games/compile',
+      builder: (context, state) => const CompileWordPage(),
+    ),
+    GoRoute(
+      path: '/games/truefalse',
+      builder: (context, state) => const TrueFalsePage(),
+    ),
     GoRoute(
       path: '/games/result',
-      builder: (context, state) => GameResultPage(result: state.extra as QuizComplete),
+      builder: (context, state) =>
+          GameResultPage(result: state.extra as QuizComplete),
     ),
-    GoRoute(path: '/lessons', builder: (context, state) => const LessonsTopicsPage()),
+    GoRoute(
+      path: '/lessons',
+      builder: (context, state) => const LessonsTopicsPage(),
+    ),
     GoRoute(
       path: '/lessons/cards',
-      builder: (context, state) => LessonsCardsPage(topic: state.extra as String),
+      builder: (context, state) =>
+          LessonsCardsPage(topic: state.extra as String),
     ),
   ],
 );

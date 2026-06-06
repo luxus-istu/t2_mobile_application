@@ -1,69 +1,74 @@
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:injectable/injectable.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:t2_mobile_application/core/config/supabase_config.dart';
 import 'package:t2_mobile_application/features/auth/data/models/user_model.dart';
 
 abstract interface class AuthRemoteDataSource {
-  Future<UserModel> login(String phone, String password);
+  Future<UserModel> login(String email, String password);
   Future<UserModel> register(
-    String phone,
+    String email,
     String password,
     String firstName,
     String lastName,
     String gender,
   );
+  Future<UserModel> anonymousLogin();
   Future<UserModel?> checkSession();
   Future<void> logout();
 }
 
 @LazySingleton(as: AuthRemoteDataSource)
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
-  final SupabaseClient _client = SupabaseConfig.client;
-
-  String _emailFromPhone(String phone) => '${phone.replaceAll('+', '')}@example.com';
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   @override
-  Future<UserModel> login(String phone, String password) async {
-    final response = await _client.auth.signInWithPassword(
-      email: _emailFromPhone(phone),
+  Future<UserModel> login(String email, String password) async {
+    final response = await _auth.signInWithEmailAndPassword(
+      email: email,
       password: password,
     );
     final user = response.user;
     if (user == null) throw Exception('Login failed');
-    
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final data = doc.data() ?? {};
+
     return UserModel(
-      phone: phone,
+      email: email,
       password: password,
-      firstName: user.userMetadata?['first_name'] ?? '',
-      lastName: user.userMetadata?['last_name'] ?? '',
-      gender: user.userMetadata?['gender'] ?? '',
+      firstName: data['first_name'] ?? '',
+      lastName: data['last_name'] ?? '',
+      gender: data['gender'] ?? '',
     );
   }
 
   @override
   Future<UserModel> register(
-    String phone,
+    String email,
     String password,
     String firstName,
     String lastName,
     String gender,
   ) async {
-    final response = await _client.auth.signUp(
-      email: _emailFromPhone(phone),
+    final response = await _auth.createUserWithEmailAndPassword(
+      email: email,
       password: password,
-      data: {
-        'first_name': firstName,
-        'last_name': lastName,
-        'gender': gender,
-        'phone': phone,
-      },
     );
-    
+
     final user = response.user;
     if (user == null) throw Exception('Registration failed');
-    
+
+    await _firestore.collection('users').doc(user.uid).set({
+      'first_name': firstName,
+      'last_name': lastName,
+      'gender': gender,
+      'email': email,
+    });
+
     return UserModel(
-      phone: phone,
+      email: email,
       password: password,
       firstName: firstName,
       lastName: lastName,
@@ -72,22 +77,39 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   }
 
   @override
-  Future<UserModel?> checkSession() async {
-    final session = _client.auth.currentSession;
-    if (session == null) return null;
-    
-    final user = session.user;
+  Future<UserModel> anonymousLogin() async {
+    final response = await _auth.signInAnonymously();
+    final user = response.user;
+    if (user == null) throw Exception('Anonymous login failed');
+
     return UserModel(
-      phone: user.userMetadata?['phone'] ?? '',
+      email: 'guest_${user.uid}@example.com',
       password: '',
-      firstName: user.userMetadata?['first_name'] ?? '',
-      lastName: user.userMetadata?['last_name'] ?? '',
-      gender: user.userMetadata?['gender'] ?? '',
+      firstName: 'Гость',
+      lastName: '',
+      gender: 'none',
+    );
+  }
+
+  @override
+  Future<UserModel?> checkSession() async {
+    final user = _auth.currentUser;
+    if (user == null) return null;
+
+    final doc = await _firestore.collection('users').doc(user.uid).get();
+    final data = doc.data() ?? {};
+
+    return UserModel(
+      email: data['email'] ?? user.email ?? 'guest_${user.uid}@example.com',
+      password: '',
+      firstName: data['first_name'] ?? 'Гость',
+      lastName: data['last_name'] ?? '',
+      gender: data['gender'] ?? 'none',
     );
   }
 
   @override
   Future<void> logout() async {
-    await _client.auth.signOut();
+    await _auth.signOut();
   }
 }

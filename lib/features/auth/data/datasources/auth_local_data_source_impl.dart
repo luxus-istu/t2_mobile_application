@@ -7,7 +7,7 @@ import 'package:t2_mobile_application/features/auth/data/models/user_model.dart'
 
 @LazySingleton(as: AuthLocalDataSource)
 final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
-  static const String sessionKey = 'active_user_phone';
+  static const String sessionKey = 'active_user_email';
 
   final Box<UserModel> usersBox;
   final FlutterSecureStorage storage;
@@ -16,24 +16,24 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<Either<Exception, UserModel>> login(
-    String phone,
+    String email,
     String password,
   ) async {
     try {
       final existingUser = usersBox.values.cast<UserModel?>().firstWhere(
-        (user) => user?.phone == phone,
+        (user) => user?.email == email,
         orElse: () => null,
       );
 
       if (existingUser != null) {
         if (existingUser.password == password) {
-          await storage.write(key: sessionKey, value: phone);
+          await storage.write(key: sessionKey, value: email);
           return Right(existingUser);
         } else {
           return Left(Exception('Неверный пароль'));
         }
       }
-      return Left(Exception('Пользователь с таким номером не найден'));
+      return Left(Exception('Пользователь с таким email не найден'));
     } on Exception catch (e) {
       return Left(e);
     } catch (e) {
@@ -43,7 +43,7 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
 
   @override
   Future<Either<Exception, UserModel>> register(
-    String phone,
+    String email,
     String password,
     String firstName,
     String lastName,
@@ -51,7 +51,7 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   ) async {
     try {
       final existingUser = usersBox.values.cast<UserModel?>().firstWhere(
-        (user) => user?.phone == phone,
+        (user) => user?.email == email,
         orElse: () => null,
       );
 
@@ -60,14 +60,14 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       }
 
       final newUser = UserModel(
-        phone: phone,
+        email: email,
         password: password,
         firstName: firstName,
         lastName: lastName,
         gender: gender,
       );
       await usersBox.add(newUser);
-      await storage.write(key: sessionKey, value: phone);
+      await storage.write(key: sessionKey, value: email);
       return Right(newUser);
     } on Exception catch (e) {
       return Left(e);
@@ -79,11 +79,11 @@ final class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   @override
   Future<Either<Exception, UserModel?>> checkSession() async {
     try {
-      final phone = await storage.read(key: sessionKey);
-      if (phone == null) return Right(null);
+      final email = await storage.read(key: sessionKey);
+      if (email == null) return Right(null);
 
       final existingUser = usersBox.values.cast<UserModel?>().firstWhere(
-        (user) => user?.phone == phone,
+        (user) => user?.email == email,
         orElse: () => null,
       );
       return Right(existingUser);

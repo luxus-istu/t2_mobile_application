@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -22,33 +21,15 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   bool isLogin = true;
 
-  final _phoneCtrl = TextEditingController(text: '+7');
+  final _emailCtrl = TextEditingController();
   final _passwordCtrl = TextEditingController();
   final _firstNameCtrl = TextEditingController();
   final _lastNameCtrl = TextEditingController();
   String _gender = 'male';
 
   @override
-  void initState() {
-    super.initState();
-    _phoneCtrl.addListener(_onPhoneChanged);
-  }
-
-  void _onPhoneChanged() {
-    final text = _phoneCtrl.text;
-    if (!text.startsWith('+7')) {
-      _phoneCtrl.value = _phoneCtrl.value.copyWith(
-        text: '+7',
-        selection: const TextSelection.collapsed(offset: 2),
-        composing: TextRange.empty,
-      );
-    }
-  }
-
-  @override
   void dispose() {
-    _phoneCtrl.removeListener(_onPhoneChanged);
-    _phoneCtrl.dispose();
+    _emailCtrl.dispose();
     _passwordCtrl.dispose();
     _firstNameCtrl.dispose();
     _lastNameCtrl.dispose();
@@ -56,13 +37,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   bool _isValid() {
-    final phone = _phoneCtrl.text.trim();
-    final phoneRegex = RegExp(r'^\+7\d{10}$');
-
-    if (!phoneRegex.hasMatch(phone)) {
-      _showError('Введите полный номер (+7 и 10 цифр)');
+    final email = _emailCtrl.text.trim();
+    if (!email.contains('@') || !email.contains('.')) {
+      _showError('Введите корректный email');
       return false;
     }
+
     if (_passwordCtrl.text.length < 6) {
       _showError('Пароль должен быть не менее 6 символов');
       return false;
@@ -193,13 +173,9 @@ class _LoginPageState extends State<LoginPage> {
                         SizedBox(height: 16.h),
                       ],
                       T2TextField(
-                        label: 'Номер телефона',
-                        controller: _phoneCtrl,
-                        keyboardType: TextInputType.phone,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp(r'[0-9+]')),
-                          LengthLimitingTextInputFormatter(12),
-                        ],
+                        label: 'Email',
+                        controller: _emailCtrl,
+                        keyboardType: TextInputType.emailAddress,
                       ),
                       SizedBox(height: 16.h),
                       T2TextField(
@@ -217,12 +193,12 @@ class _LoginPageState extends State<LoginPage> {
                                   if (_isValid()) {
                                     if (isLogin) {
                                       ctx.read<AuthCubit>().submitLogin(
-                                        _phoneCtrl.text.trim(),
+                                        _emailCtrl.text.trim(),
                                         _passwordCtrl.text,
                                       );
                                     } else {
                                       ctx.read<AuthCubit>().submitRegister(
-                                        phone: _phoneCtrl.text.trim(),
+                                        email: _emailCtrl.text.trim(),
                                         password: _passwordCtrl.text,
                                         firstName: _firstNameCtrl.text.trim(),
                                         lastName: _lastNameCtrl.text.trim(),
@@ -266,6 +242,21 @@ class _LoginPageState extends State<LoginPage> {
                             color: T2Theme.magenta,
                             fontSize: 16.sp,
                             fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      TextButton(
+                        onPressed: state is AuthLoading
+                            ? null
+                            : () => ctx.read<AuthCubit>().submitAnonymous(),
+                        child: Text(
+                          'Продолжить без регистрации',
+                          style: TextStyle(
+                            color: Theme.of(
+                              ctx,
+                            ).colorScheme.onSurface.withValues(alpha: 0.5),
+                            fontSize: 14.sp,
                           ),
                         ),
                       ),

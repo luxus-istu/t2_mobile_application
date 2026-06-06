@@ -18,5 +18,12 @@ class WordEntry extends Equatable {
   });
 
   @override
-  List<Object?> get props => [id, udmurt, russian, category, emoji, transcription];
+  List<Object?> get props => [
+    id,
+    udmurt,
+    russian,
+    category,
+    emoji,
+    transcription,
+  ];
 }

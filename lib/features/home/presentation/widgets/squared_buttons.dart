@@ -7,7 +7,7 @@ final class SquaredButtons extends StatelessWidget {
   final IconData icon;
   final String title;
   final String path;
-  
+
   const SquaredButtons({
     super.key,
     required this.icon,
@@ -34,7 +34,9 @@ final class SquaredButtons extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(28.r),
             border: Border.all(
-              color: Theme.of(ctx).colorScheme.onSurface.withValues(alpha: 0.05),
+              color: Theme.of(
+                ctx,
+              ).colorScheme.onSurface.withValues(alpha: 0.05),
             ),
           ),
           child: Column(
@@ -46,11 +48,7 @@ final class SquaredButtons extends StatelessWidget {
                   color: T2Theme.magenta.withValues(alpha: 0.1),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  icon, 
-                  size: 42.w, 
-                  color: T2Theme.magenta,
-                ),
+                child: Icon(icon, size: 42.w, color: T2Theme.magenta),
               ),
               SizedBox(height: 16.h),
               Text(

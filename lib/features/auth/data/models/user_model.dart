@@ -6,7 +6,7 @@ part 'user_model.g.dart';
 @HiveType(typeId: 0)
 class UserModel extends HiveObject {
   @HiveField(0)
-  String phone;
+  String email;
 
   @HiveField(1)
   String password;
@@ -21,7 +21,7 @@ class UserModel extends HiveObject {
   String gender;
 
   UserModel({
-    required this.phone,
+    required this.email,
     required this.password,
     required this.firstName,
     required this.lastName,
@@ -30,7 +30,7 @@ class UserModel extends HiveObject {
 
   factory UserModel.fromEntity(UserEntity entity, String password) {
     return UserModel(
-      phone: entity.phone,
+      email: entity.email,
       password: password,
       firstName: entity.firstName,
       lastName: entity.lastName,
@@ -40,7 +40,7 @@ class UserModel extends HiveObject {
 
   UserEntity toEntity() {
     return UserEntity(
-      phone: phone,
+      email: email,
       firstName: firstName,
       lastName: lastName,
       gender: gender,

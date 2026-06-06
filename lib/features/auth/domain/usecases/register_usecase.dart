@@ -5,7 +5,8 @@ import 'package:t2_mobile_application/features/auth/domain/entities/user_entity.
 import 'package:t2_mobile_application/features/auth/domain/repositories/auth_repository.dart';
 
 @lazySingleton
-final class RegisterUseCase implements UseCase<Either<Exception, UserEntity>, RegisterParams> {
+final class RegisterUseCase
+    implements UseCase<Either<Exception, UserEntity>, RegisterParams> {
   final AuthRepository repository;
 
   const RegisterUseCase(this.repository);
@@ -13,7 +14,7 @@ final class RegisterUseCase implements UseCase<Either<Exception, UserEntity>, Re
   @override
   Future<Either<Exception, UserEntity>> call(RegisterParams params) async {
     return await repository.register(
-      params.phone,
+      params.email,
       params.password,
       params.firstName,
       params.lastName,
@@ -23,14 +24,14 @@ final class RegisterUseCase implements UseCase<Either<Exception, UserEntity>, Re
 }
 
 class RegisterParams {
-  final String phone;
+  final String email;
   final String password;
   final String firstName;
   final String lastName;
   final String gender;
 
   const RegisterParams({
-    required this.phone,
+    required this.email,
     required this.password,
     required this.firstName,
     required this.lastName,

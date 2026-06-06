@@ -34,6 +34,8 @@ import 'package:t2_mobile_application/features/auth/domain/usecases/logout_useca
     as _i208;
 import 'package:t2_mobile_application/features/auth/domain/usecases/register_usecase.dart'
     as _i552;
+import 'package:t2_mobile_application/features/auth/domain/usecases/anonymous_login_usecase.dart'
+    as _i888;
 import 'package:t2_mobile_application/features/auth/presentation/bloc/auth_cubit.dart'
     as _i135;
 import 'package:t2_mobile_application/features/games/data/datasources/games_local_data_source.dart'
@@ -222,12 +224,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i274.MarkWordViewedUseCase>(),
       ),
     );
+    gh.lazySingleton<_i888.AnonymousLoginUseCase>(
+      () => _i888.AnonymousLoginUseCase(gh<_i536.AuthRepository>()),
+    );
     gh.lazySingleton<_i135.AuthCubit>(
       () => _i135.AuthCubit(
         gh<_i115.LoginUseCase>(),
         gh<_i552.RegisterUseCase>(),
         gh<_i709.CheckSessionUseCase>(),
         gh<_i208.LogoutUseCase>(),
+        gh<_i888.AnonymousLoginUseCase>(),
       ),
     );
     return this;
